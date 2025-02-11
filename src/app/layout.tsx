@@ -21,7 +21,7 @@ type Props = {
 
 const Layout = ({children}: Props) => {
   return (
-    <ClerkProvider>
+    <ClerkProvider afterSignOutUrl="/">
       <html lang="en">
         <body
           className={`${plusJakartaSans.variable} antialiased`}
