@@ -8,11 +8,11 @@ import { AuthButton } from "@/modules/auth/ui/components/auth-button";
 export const HomeNavbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white flex items-center px-2 pr-5 z-50">
-      <div className="flex items-center gap-4 w-full">
-         <div className="flex items-center flex-shrink-0">
+      <div className="flex items-center gap-4 w-full pt-2">
+         <div className="flex items-center flex-shrink-0 gap-4">
             <SidebarTrigger />
             <Link href="/">
-               <Image src="/logos/youtube.svg" alt="Youtube Logo" width={120} height={40} />
+               <Image src="/logos/youtube.svg" alt="Youtube Logo" width={90} height={30} />
             </Link>
          </div>
 
