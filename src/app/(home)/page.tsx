@@ -1,17 +1,22 @@
+import HomeView from "@/modules/home/ui/views/home-view";
 import { HydrateClient, trpc } from "@/trpc/server";
-import React, { Suspense } from "react";
-import Client from "./client";
 
-type Props = {};
+export const dynamic = "force-dynamic";
 
-const Page = async (props: Props) => {
-  void trpc.hello.prefetch({ text: "hello world" });
+type Props = {
+  searchParams: Promise<{
+    categoryId?: string;
+  }>
+};
+
+const Page = async ({ searchParams}: Props) => {
+
+  const { categoryId}= await searchParams;
+  void trpc.categorires.getMany.prefetch();
 
   return (
     <HydrateClient>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Client />
-      </Suspense>
+      <HomeView categoryId={categoryId} />
     </HydrateClient>
   );
 };

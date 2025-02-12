@@ -37,3 +37,7 @@ body {
 .cl-internal-1hp5nqm {
   display: none !important;
 }
+
+.animate {
+  @apply transition-all duration-300 ease-in-out;
+}
