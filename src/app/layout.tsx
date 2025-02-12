@@ -6,7 +6,6 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCProvider } from "@/trpc/client";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
-  variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
 });
 
@@ -25,7 +24,7 @@ const Layout = ({children}: Props) => {
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en">
         <body
-          className={`${plusJakartaSans.variable} antialiased`}
+          className={`${plusJakartaSans.className} antialiased tracking-tight font-medium`}
         >
           <TRPCProvider>
             {children}

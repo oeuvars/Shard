@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { UserCircleIcon } from "lucide-react"
+import { ClapperboardIcon, UserCircleIcon } from "lucide-react"
 import { UserButton, SignInButton, SignedIn, SignedOut } from "@clerk/nextjs"
 import { Fragment } from "react"
 
@@ -9,7 +9,11 @@ export const AuthButton = () => {
    return (
       <Fragment>
          <SignedIn>
-            <UserButton />
+            <UserButton>
+               <UserButton.MenuItems>
+                  <UserButton.Link label="Studio" href="/studio" labelIcon={<ClapperboardIcon className="size-4 my-auto"/>} />
+               </UserButton.MenuItems>
+            </UserButton>
          </SignedIn>
          <SignedOut>
             <SignInButton mode="modal">
