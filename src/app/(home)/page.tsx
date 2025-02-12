@@ -1,13 +1,19 @@
-import React from 'react'
+import { HydrateClient, trpc } from "@/trpc/server";
+import React, { Suspense } from "react";
+import Client from "./client";
 
-type Props = {}
+type Props = {};
 
-const Page = (props: Props) => {
+const Page = async (props: Props) => {
+  void trpc.hello.prefetch({ text: "hello world" });
+
   return (
-    <div>
-      Todo: Video feed
-    </div>
-  )
-}
+    <HydrateClient>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Client />
+      </Suspense>
+    </HydrateClient>
+  );
+};
 
-export default Page
+export default Page;
