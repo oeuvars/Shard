@@ -11,7 +11,7 @@ const StudioLayout = ({ children }: Props) => {
     <SidebarProvider>
       <div className='w-full'>
         <StudioNavbar />
-        <div className='flex min-h-screen'>
+        <div className='flex min-h-screen mt-16 pl-2'>
           <StudioSidebar />
           <main className='flex-1 overflow-y-auto'>
             {children}
