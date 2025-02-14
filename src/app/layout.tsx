@@ -4,6 +4,7 @@ import "./globals.css";
 import { ReactNode } from "react";
 import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCProvider } from "@/trpc/client";
+import { Toaster } from "@/components/ui/sonner";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -23,10 +24,9 @@ const Layout = ({children}: Props) => {
   return (
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en">
-        <body
-          className={`${plusJakartaSans.className} antialiased tracking-tight font-medium`}
-        >
+        <body className={`${plusJakartaSans.className} antialiased tracking-tight font-medium`}>
           <TRPCProvider>
+            <Toaster />
             {children}
           </TRPCProvider>
         </body>

@@ -38,7 +38,7 @@ export const videos = pgTable("videos", {
    }),
    createdAt: timestamp("created_at").defaultNow().notNull(),
    updatedAt: timestamp("updated_at").defaultNow().notNull(),
-}, (t) => [uniqueIndex("title_idx").on(t.title)]);
+});
 
 // Relations work on application level and not on database level. It is a higher level of abstraction. It is independent of the database, its only for drizzle to know about the relationships between tables.
 export const videoRelations = relations(videos, ({ one }) => ({

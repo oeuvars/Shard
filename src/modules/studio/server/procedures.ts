@@ -5,7 +5,7 @@ import { and, desc, eq, lt, or } from 'drizzle-orm';
 import { z } from 'zod';
 
 export const studioRouter = createTRPCRouter({
-   getmany: protectedProcedure
+   getMany: protectedProcedure
    .input(z.object({
       limit: z.number().min(1).max(100),
       cursor: z.object({

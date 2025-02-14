@@ -8,7 +8,7 @@ type Props = {}
 export const dynamic = "force-dynamic";
 
 const Page = async (props: Props) => {
-  void trpc.studio.getmany.prefetchInfinite({
+  void trpc.studio.getMany.prefetchInfinite({
     limit: DEFAULT_LIMIT,
   })
   return (

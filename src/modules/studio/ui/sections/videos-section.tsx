@@ -6,7 +6,7 @@ import { trpc } from '@/trpc/client'
 type Props = {}
 
 const VideosSection = (props: Props) => {
-  const [data] = trpc.studio.getmany.useSuspenseInfiniteQuery({
+  const [data] = trpc.studio.getMany.useSuspenseInfiniteQuery({
     limit: DEFAULT_LIMIT,
   }, {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
