@@ -30,6 +30,12 @@ export const videos = pgTable("videos", {
    id: uuid("id").primaryKey().defaultRandom(),
    title: text("title").notNull(),
    description: text("description"),
+   videoStatus: text("video_status"),
+   videoAssetId: text("video_asset_id").unique(),
+   videoUploaderId: text("video_uploader_id").unique(),
+   videoPlaybackId: text("video_playback_id").unique(),
+   videoTrackId: text("video_track_id").unique(),
+   videoTrackStatus: text("video_track_status"),
    userId: uuid("user_id").references(() => users.id, {
       onDelete: "cascade",
    }).notNull(),

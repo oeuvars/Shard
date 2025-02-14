@@ -1,9 +1,11 @@
 "use client"
 
+import { ResponsiveModal } from '@/components/global/responsive-modal'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/hooks/use-toast'
 import { trpc } from '@/trpc/client'
 import { Loader2, PlusIcon } from 'lucide-react'
+import { StudioUploader } from './studio-uploader'
 
 type Props = {}
 
@@ -23,10 +25,15 @@ const StudioUpload = (props: Props) => {
   })
 
   return (
-    <Button variant="secondary" onClick={() => create.mutate()} disabled={create.isPending}>
-      {create.isPending ? <Loader2 className='animate-spin'/> : <PlusIcon />}
-      Create
-    </Button>
+    <>
+      <ResponsiveModal title='Upload a video' open={!!create.data} onOpenChange={() => create.reset()}>
+        {create.data?.url ? <StudioUploader endpoint={create.data?.url} onSuccess={() => create.reset()} /> : <Loader2 className='animate-spin' />}
+      </ResponsiveModal>
+      <Button variant="secondary" onClick={() => create.mutate()} disabled={create.isPending}>
+        {create.isPending ? <Loader2 className='animate-spin'/> : <PlusIcon />}
+        Create
+      </Button>
+    </>
   )
 }
 
