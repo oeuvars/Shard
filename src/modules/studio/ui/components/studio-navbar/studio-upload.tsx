@@ -25,7 +25,7 @@ const StudioUpload = (props: Props) => {
   })
 
   return (
-    <>
+    <section>
       <ResponsiveModal title='Upload a video' open={!!create.data} onOpenChange={() => create.reset()}>
         {create.data?.url ? <StudioUploader endpoint={create.data?.url} onSuccess={() => create.reset()} /> : <Loader2 className='animate-spin' />}
       </ResponsiveModal>
@@ -33,7 +33,7 @@ const StudioUpload = (props: Props) => {
         {create.isPending ? <Loader2 className='animate-spin'/> : <PlusIcon />}
         Create
       </Button>
-    </>
+    </section>
   )
 }
 

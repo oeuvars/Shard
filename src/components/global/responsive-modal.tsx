@@ -21,33 +21,31 @@ import {
 
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ReactNode } from 'react';
-import { Button } from '../ui/button';
 
 type Props = {
    children: ReactNode;
    open: boolean;
    title: string;
+   description?: string;
    onOpenChange: (open: boolean) => void;
 };
 
-export const ResponsiveModal = (props: Props) => {
+export const ResponsiveModal = ({ children, open, title, description, onOpenChange }: Props) => {
 
   const isMobile = useIsMobile();
 
    if (isMobile) {
       return (
-         <Drawer open={props.open} onOpenChange={props.onOpenChange}>
+         <Drawer open={open} onOpenChange={onOpenChange}>
             <DrawerTrigger asChild>
-               <button className="btn btn-primary">Open drawer</button>
             </DrawerTrigger>
             <DrawerContent>
                <DrawerHeader>
-                  <DrawerTitle>{props.title}</DrawerTitle>
+                  <DrawerTitle>{title}</DrawerTitle>
                   <DrawerDescription>
-                     Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt
-                     aute id consequat veniam incididunt duis in sint irure nisi.
+                     {description}
                   </DrawerDescription>
-                  {props.children}
+                  {children}
                </DrawerHeader>
                <DrawerFooter>
                   <DrawerClose>Close</DrawerClose>
@@ -57,21 +55,18 @@ export const ResponsiveModal = (props: Props) => {
       );
    }
    return (
-      <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+      <Dialog open={open} onOpenChange={onOpenChange}>
          <DialogTrigger asChild>
          </DialogTrigger>
          <DialogContent>
             <DialogHeader>
-               <DialogTitle>{props.title}</DialogTitle>
+               <DialogTitle>{title}</DialogTitle>
                <DialogDescription>
-                  Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt
-                  aute id consequat veniam incididunt duis in sint irure nisi.
+                  {description}
                </DialogDescription>
-               {props.children}
+               {children}
             </DialogHeader>
             <DialogFooter>
-               <Button className="btn btn-neutral">Cancel</Button>
-               <Button className="btn btn-accent">Save</Button>
             </DialogFooter>
          </DialogContent>
       </Dialog>

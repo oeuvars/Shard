@@ -13,6 +13,16 @@ export const videosRouter = createTRPCRouter({
             new_asset_settings: {
                passthrough: userId,
                playback_policy: ["public"],
+               input: [
+                  {
+                     generated_subtitles: [
+                        {
+                           language_code: "en",
+                           name: "English",
+                        }
+                     ]
+                  }
+               ]
             },
             cors_origin: "*" // TODO: In production, set this to my domain
          });
@@ -23,7 +33,7 @@ export const videosRouter = createTRPCRouter({
                userId,
                title: 'New video',
                videoStatus: 'waiting',
-               videoAssetId: upload.id,
+               videoUploadId: upload.id,
             })
             .returning();
 
