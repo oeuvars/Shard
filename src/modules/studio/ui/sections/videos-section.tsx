@@ -114,7 +114,7 @@ const VideosSectionSuspense = (props: Props) => {
             </TableHeader>
             <TableBody>
               {videos.pages.flatMap((page) => page.items).map((video) => (
-                <Link href={`/studio/videos/`} key={video.id} legacyBehavior>
+                <Link href={`/studio/videos/${video.id}`} key={video.id} legacyBehavior>
                   <TableRow className='cursor-pointer hover:bg-zinc-50'>
                     <TableCell className='pl-6'>
                       <div className='flex items-center gap-4'>

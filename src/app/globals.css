@@ -13,3 +13,8 @@
 .animate {
   @apply transition-all duration-300 ease-in-out;
 }
+
+.cl-userButtonPopoverCard.cl-popoverBox.cl-userButton-popover {
+  top: 70px !important;
+  left: 1865px !important
+}

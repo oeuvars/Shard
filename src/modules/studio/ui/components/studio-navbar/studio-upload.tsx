@@ -6,12 +6,14 @@ import { useToast } from '@/hooks/use-toast'
 import { trpc } from '@/trpc/client'
 import { Loader2, PlusIcon } from 'lucide-react'
 import { StudioUploader } from './studio-uploader'
+import { useRouter } from 'next/navigation'
 
 type Props = {}
 
 const StudioUpload = (props: Props) => {
 
   const { showToast } = useToast();
+  const router = useRouter();
 
   const utils = trpc.useUtils();
   const create = trpc.videos.create.useMutation({
@@ -24,10 +26,17 @@ const StudioUpload = (props: Props) => {
     }
   })
 
+  const onSuccess = () => {
+    if (!create.data?.video.id) return;
+    create.reset();
+
+    router.push(`/studio/videos/${create.data?.video.id}`)
+  }
+
   return (
     <section>
       <ResponsiveModal title='Upload a video' open={!!create.data} onOpenChange={() => create.reset()}>
-        {create.data?.url ? <StudioUploader endpoint={create.data?.url} onSuccess={() => create.reset()} /> : <Loader2 className='animate-spin' />}
+        {create.data?.url ? <StudioUploader endpoint={create.data?.url} onSuccess={onSuccess} /> : <Loader2 className='animate-spin' />}
       </ResponsiveModal>
       <Button variant="secondary" onClick={() => create.mutate()} disabled={create.isPending}>
         {create.isPending ? <Loader2 className='animate-spin'/> : <PlusIcon />}
