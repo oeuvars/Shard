@@ -6,6 +6,7 @@ import React, { Suspense } from 'react'
 import VideoPlayer from '../components/video-player'
 import VideoBanner from '../components/video-banner'
 import VideoInformation from '../components/video-information'
+import { useAuth } from '@clerk/nextjs'
 
 type Props = {
    videoId: string
@@ -21,14 +22,30 @@ const VideoSection = ({ videoId }: Props) => {
 
 const VideoSectionSuspense = ({ videoId }: Props) => {
 
+   const { isSignedIn } = useAuth();
+
    const [video] =  trpc.videos.getOne.useSuspenseQuery({ id: videoId });
+
+   const createView = trpc.videoViews.create.useMutation({
+      onSuccess: () => {
+         utils.videos.getOne.invalidate({ id: videoId });
+      },
+   });
+
+   const utils = trpc.useUtils();
+
+   const handlePlay = () => {
+      if (!isSignedIn) return;
+
+      createView.mutate({ id: videoId });
+   }
 
    return (
       <>
          <div className={cn("aspect-video bg-black rounded-xl overflow-hidden relative", video.videoStatus !== "ready" && "rounded-b-none")}>
             <VideoPlayer
                autoPlay
-               onPlay={() => {}}
+               onPlay={handlePlay}
                playbackId={video.videoPlaybackId}
                thumbnailUrl={video.thumbnailUrl}
             />

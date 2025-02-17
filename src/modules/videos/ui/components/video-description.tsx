@@ -18,10 +18,10 @@ const VideoDescription = ({ compactDate, expandedViews, compactViews, expandedDa
    return (
       <div onClick={() => setIsExpanded((current) => !current)} className='bg-zinc-200/50 rounded-xl p-3 cursor-pointer hover:bg-zinc/70 transition'>
          <div className='flex gap-2 text-sm mb-2'>
-            <span className='font-medium'>
-               {isExpanded ? expandedViews : compactViews} views
+            <span className='font-semibold'>
+               {isExpanded ? expandedViews : compactViews} &nbsp;views
             </span>
-            <span className='font-medium'>
+            <span className='font-medium text-zinc-500'>
                {isExpanded ? expandedDate : compactDate}
             </span>
          </div>
