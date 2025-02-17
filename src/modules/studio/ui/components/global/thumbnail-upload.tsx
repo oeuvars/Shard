@@ -22,6 +22,7 @@ const ThumbnailUpload = ({ videoId, open, onOpenChange }: Props) => {
             endpoint="thumbnailUploader"
             input={{ videoId }}
             onClientUploadComplete={onUploadComplete}
+            className="ut-button:bg-zinc-800 ut-button:ut-uploading:bg-zinc-800 ut-button:!cursor-pointer"
          />
       </ResponsiveModal>
    )

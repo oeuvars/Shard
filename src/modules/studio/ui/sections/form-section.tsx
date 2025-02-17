@@ -90,11 +90,44 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
             message: 'Video deleted successfully',
             type: 'success',
          })
-         router.push('/studio')
+         router.refresh();
       },
       onError: () => {
          showToast({
             message: 'Error deleted video',
+            type: 'error',
+         })
+      }
+   });
+
+   const restoreThumbnail = trpc.videos.restoreThumbnail.useMutation({
+      onSuccess: () => {
+         utils.studio.getOne.invalidate({ id: videoId });
+         showToast({
+            message: 'Thumbnail restored successfully',
+            type: 'success',
+         })
+         router.refresh();
+      },
+      onError: () => {
+         showToast({
+            message: 'Could not restore thumbnail',
+            type: 'error',
+         })
+      }
+   });
+
+   const generateThumbnail = trpc.videos.generateThumbnail.useMutation({
+      onSuccess: () => {
+         showToast({
+            message: 'Background job started',
+            type: 'success',
+         })
+         router.refresh();
+      },
+      onError: () => {
+         showToast({
+            message: 'Some error',
             type: 'error',
          })
       }
@@ -216,11 +249,11 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                                              <ImagePlus className="size-4 mr-1"/>
                                              Change
                                           </DropdownMenuItem>
-                                          <DropdownMenuItem>
+                                          <DropdownMenuItem onClick={() => generateThumbnail.mutate({ id: video.id })}>
                                              <SparklesIcon className="size-4 mr-1"/>
                                              AI-generated
                                           </DropdownMenuItem>
-                                          <DropdownMenuItem>
+                                          <DropdownMenuItem onClick={() => restoreThumbnail.mutate({ id: video.id })}>
                                              <RotateCcwIcon className="size-4 mr-1"/>
                                              Restore
                                           </DropdownMenuItem>
