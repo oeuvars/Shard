@@ -24,7 +24,7 @@ const Layout = ({children}: Props) => {
   return (
     <ClerkProvider afterSignOutUrl="/">
       <html lang="en">
-        <body className={`${plusJakartaSans.className} antialiased tracking-tight font-medium`}>
+        <body className={`${plusJakartaSans.className} antialiased tracking-tight font-normal`}>
           <TRPCProvider>
             <Toaster />
             {children}

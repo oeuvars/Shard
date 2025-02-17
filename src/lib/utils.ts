@@ -39,3 +39,44 @@ export function formatDate(date: Date): string {
      default: return 'th';
    }
  }
+
+
+ export function formatDistanceToNow(date: Date | number | string, options?: { addSuffix?: boolean }): string {
+  const now = new Date();
+  const inputDate = new Date(date);
+
+  const diffInSeconds = Math.round((now.getTime() - inputDate.getTime()) / 1000);
+
+  const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+
+  const units = {
+    year: 31536000,
+    month: 2592000,
+    week: 604800,
+    day: 86400,
+    hour: 3600,
+    minute: 60,
+    second: 1,
+  };
+
+  let relativeTime = "";
+
+  for (const unit in units) {
+    const divisor = units[unit as keyof typeof units];
+    if (Math.abs(diffInSeconds) >= divisor || unit === 'second') {
+      const value = Math.round(diffInSeconds / divisor);
+      relativeTime = rtf.format(value, unit as Intl.RelativeTimeFormatUnit);
+      break;
+    }
+  }
+
+  if (options && options.addSuffix) {
+    if (diffInSeconds < 0) {
+      relativeTime = "in " + relativeTime;
+    } else {
+      relativeTime += " ago";
+    }
+  }
+
+  return relativeTime;
+}
