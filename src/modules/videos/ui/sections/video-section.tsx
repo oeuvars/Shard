@@ -3,9 +3,9 @@
 import { cn } from '@/lib/utils'
 import { trpc } from '@/trpc/client'
 import React, { Suspense } from 'react'
-import VideoPlayer from '../components/video-player'
+import VideoPlayer, { VideoPlayerSkeleton } from '../components/video-player'
 import VideoBanner from '../components/video-banner'
-import VideoInformation from '../components/video-information'
+import VideoInformation, { VideoInformationSkeleton } from '../components/video-information'
 import { useAuth } from '@clerk/nextjs'
 
 type Props = {
@@ -14,10 +14,19 @@ type Props = {
 
 const VideoSection = ({ videoId }: Props) => {
   return (
-    <Suspense fallback={"loading"}>
+    <Suspense fallback={<VideoSectionSkeleton />}>
       <VideoSectionSuspense videoId={videoId} />
     </Suspense>
   )
+}
+
+const VideoSectionSkeleton = () => {
+   return (
+      <>
+         <VideoPlayerSkeleton />
+         <VideoInformationSkeleton />
+      </>
+   )
 }
 
 const VideoSectionSuspense = ({ videoId }: Props) => {
