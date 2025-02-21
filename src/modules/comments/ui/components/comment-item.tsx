@@ -56,7 +56,7 @@ const CommentItem = ({ comment }: Props) => {
                </Link>
                <p className='text-sm'>{comment.content}</p>
             </div>
-            <DropdownMenu>
+            <DropdownMenu modal={false}>
                <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className='size-8'>
                      <MoreVertical />
