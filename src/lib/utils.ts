@@ -65,16 +65,19 @@ export function formatDate(date: Date): string {
     const divisor = units[unit as keyof typeof units];
     if (Math.abs(diffInSeconds) >= divisor || unit === 'second') {
       const value = Math.round(diffInSeconds / divisor);
+      console.log("first", relativeTime)
       relativeTime = rtf.format(value, unit as Intl.RelativeTimeFormatUnit);
+      relativeTime = relativeTime.replace("in ", "");
       break;
     }
   }
 
   if (options && options.addSuffix) {
     if (diffInSeconds < 0) {
-      relativeTime = "in " + relativeTime;
+      relativeTime = relativeTime;
     } else {
       relativeTime += " ago";
+      console.log("third", relativeTime)
     }
   }
 
