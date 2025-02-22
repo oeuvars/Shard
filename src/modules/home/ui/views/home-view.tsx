@@ -1,4 +1,4 @@
-import React from 'react'
+
 import CategorySection from '../sections/category-section'
 
 type Props = {

@@ -3,7 +3,7 @@ import { SidebarHeader, SidebarMenuItem, SidebarMenuButton, useSidebar } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
-import React from 'react';
+;
 
 type Props = {};
 

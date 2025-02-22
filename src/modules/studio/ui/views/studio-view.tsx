@@ -1,4 +1,4 @@
-import React from 'react'
+
 import VideosSection from '../sections/videos-section'
 
 type Props = {}

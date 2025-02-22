@@ -1,6 +1,6 @@
 import { formatDuration } from '@/lib/utils'
 import Image from 'next/image'
-import React from 'react'
+
 
 type Props = {
   title: string

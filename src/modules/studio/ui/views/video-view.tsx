@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { FormSection } from '../sections/form-section'
 
 type Props = {

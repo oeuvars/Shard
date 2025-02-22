@@ -1,6 +1,6 @@
 
 import HomeLayout from '@/modules/home/ui/layouts/home-layout'
-import React from 'react'
+
 
 type Props = {
    children: React.ReactNode

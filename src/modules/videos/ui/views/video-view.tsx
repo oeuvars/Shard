@@ -1,4 +1,4 @@
-import React from 'react';
+;
 import VideoSection from '../sections/video-section';
 import SuggestionSection from '../sections/suggestion-section';
 import CommentSection from '../sections/comment-section';

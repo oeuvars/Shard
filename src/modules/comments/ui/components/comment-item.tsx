@@ -1,4 +1,3 @@
-import React from 'react'
 import { CommentGetManyOutput } from '../../types';
 import Link from 'next/link';
 import UserAvatar from '@/components/global/user-avatar';

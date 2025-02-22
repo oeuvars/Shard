@@ -1,4 +1,4 @@
-import React from 'react'
+
 import { VideoGetOneOutput } from '../../types'
 import { AlertTriangleIcon } from 'lucide-react'
 
