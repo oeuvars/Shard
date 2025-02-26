@@ -34,7 +34,8 @@ const CommentForm = ({ videoId, parentId, onSuccess, onCancel, variant = "commen
 
    const create = trpc.comments.create.useMutation({
       onSuccess: () => {
-         utils.comments.getMany.invalidate({ videoId: videoId });
+         utils.comments.getMany.invalidate({ videoId });
+         utils.comments.getMany.invalidate({ videoId, parentId })
          form.reset();
          onSuccess?.();
       },

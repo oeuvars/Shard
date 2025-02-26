@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import { TRPCProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthModalProvider } from "./(auth)/sign-in/providers/auth-modal-provider";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const figtree = Figtree({
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Youtube",
-  description: "Youtube is a video sharing platform that allows users to watch, upload, and share videos.",
-  keywords: "youtube, video sharing, streaming, entertainment, social media, content creation, online videos",
+  title: "Shard",
+  description: "Shard is a video sharing platform that allows users to watch, upload, and share videos.",
+  keywords: "video sharing, streaming, entertainment, social media, content creation, online videos",
 };
 
 type Props = {
@@ -23,7 +23,7 @@ type Props = {
 const Layout = ({children}: Props) => {
   return (
     <html lang="en">
-      <body className={`${plusJakartaSans.className} antialiased tracking-tight font-normal`}>
+      <body className={`${figtree.className} antialiased tracking-tight font-normal`}>
         <TRPCProvider>
           <AuthModalProvider>
             <Toaster />
