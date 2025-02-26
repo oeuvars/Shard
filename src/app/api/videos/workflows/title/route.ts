@@ -1,4 +1,4 @@
-import { db } from "@/db";
+import { db } from "@/db/drizzle";
 import { videos } from "@/db/schema";
 import { serve } from "@upstash/workflow/nextjs"
 import { and, eq } from "drizzle-orm";

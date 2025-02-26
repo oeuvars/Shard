@@ -2,11 +2,11 @@
 
 import { cn } from '@/lib/utils'
 import { trpc } from '@/trpc/client'
-import React, { Suspense } from 'react'
+import { Suspense } from 'react'
 import VideoPlayer, { VideoPlayerSkeleton } from '../components/video-player'
 import VideoBanner from '../components/video-banner'
 import VideoInformation, { VideoInformationSkeleton } from '../components/video-information'
-import { useAuth } from '@clerk/nextjs'
+import { authClient } from '@/lib/auth-client'
 
 type Props = {
    videoId: string
@@ -31,7 +31,8 @@ const VideoSectionSkeleton = () => {
 
 const VideoSectionSuspense = ({ videoId }: Props) => {
 
-   const { isSignedIn } = useAuth();
+   const session = authClient.useSession();
+   const isInSession = !!session.data?.session
 
    const [video] =  trpc.videos.getOne.useSuspenseQuery({ id: videoId });
 
@@ -44,7 +45,7 @@ const VideoSectionSuspense = ({ videoId }: Props) => {
    const utils = trpc.useUtils();
 
    const handlePlay = () => {
-      if (!isSignedIn) return;
+      if (!isInSession) return;
 
       createView.mutate({ id: videoId });
    }

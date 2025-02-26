@@ -1,9 +1,9 @@
 "use client";
 
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
 import { FlameIcon, HomeIcon, PlaySquareIcon } from "lucide-react";
 import Link from "next/link";
-import { useClerk, useAuth } from "@clerk/nextjs";
 
 const items = [
    { title: "Home", href: "/", icon: HomeIcon },
@@ -12,8 +12,9 @@ const items = [
 ]
 
 export const MainSection = () => {
-   const clerk = useClerk();
-   const { isSignedIn } = useAuth();
+   const session = authClient.useSession();
+   const user = session.data?.user
+   const isInSession = !!session.data?.session
 
    return (
       <SidebarGroup>
@@ -25,9 +26,9 @@ export const MainSection = () => {
                      asChild
                      isActive={false}
                      onClick={(e) => {
-                        if (!isSignedIn && item.auth) {
+                        if (!isInSession && item.auth) {
                            e.preventDefault();
-                           return clerk.openSignIn()
+                           // return clerk.openSignIn()
                         }
                      }}
                      key={index}

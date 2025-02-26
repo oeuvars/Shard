@@ -1,5 +1,5 @@
-import { db } from '@/db';
-import { videos } from '@/db/schema';
+import { db } from '@/db/drizzle';
+import { video as videos } from '@/db/schema';
 import { createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, lt, or } from 'drizzle-orm';

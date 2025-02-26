@@ -3,9 +3,9 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import { VideoGetOneOutput } from '../../types';
-import { useClerk } from '@clerk/nextjs';
 import { trpc } from '@/trpc/client';
 import { useToast } from '@/hooks/use-toast';
+import { authClient } from '@/lib/auth-client';
 
 type Props = {
    videoId: string;
@@ -16,7 +16,9 @@ type Props = {
 
 const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => {
 
-   const clerk = useClerk();
+   const session = authClient.useSession();
+   const user = session.data?.user;
+
    const utils = trpc.useUtils();
    const { showToast } = useToast();
 
@@ -30,7 +32,7 @@ const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => 
             type: 'error',
          })
          if (error.data?.code === "UNAUTHORIZED") {
-            clerk.openSignIn()
+            // clerk.openSignIn()
          }
       }
    });
@@ -45,7 +47,7 @@ const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => 
             type: 'error',
          })
          if (error.data?.code === "UNAUTHORIZED") {
-            clerk.openSignIn()
+            // clerk.openSignIn()
          }
       }
    });

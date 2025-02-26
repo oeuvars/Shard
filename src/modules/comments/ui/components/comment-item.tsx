@@ -6,16 +6,17 @@ import { trpc } from '@/trpc/client';
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown';
 import { Button } from '@/components/ui/button';
 import { MessageSquareIcon, MoreVertical, ThumbsDown, ThumbsUp, Trash2Icon } from 'lucide-react';
-import { useAuth, useClerk } from '@clerk/nextjs';
 import { useToast } from '@/hooks/use-toast';
+import { authClient } from '@/lib/auth-client';
 
 type Props = {
    comment: CommentGetManyOutput["items"][number];
 }
 
 const CommentItem = ({ comment }: Props) => {
-   const { userId } = useAuth();
-   const clerk = useClerk();
+   const session = authClient.useSession();
+   const user = session.data?.user;
+
    const utils = trpc.useUtils();
 
    const { showToast } = useToast()
@@ -26,7 +27,7 @@ const CommentItem = ({ comment }: Props) => {
       },
       onError: (error) => {
          if (error.data?.code === "UNAUTHORIZED") {
-            clerk.openSignIn()
+            // clerk.openSignIn()
          } else {
             showToast({
                message: "Some error occoured",
@@ -46,7 +47,7 @@ const CommentItem = ({ comment }: Props) => {
                message: "Please log in first",
                type: "error"
             })
-            clerk.openSignIn()
+            // clerk.openSignIn()
          } else {
             showToast({
                message: "Some error occoured",
@@ -65,7 +66,7 @@ const CommentItem = ({ comment }: Props) => {
                message: "Please log in first",
                type: "error"
             })
-            clerk.openSignIn()
+            // clerk.openSignIn()
          } else {
             showToast({
                message: "Some error occoured",
@@ -127,7 +128,7 @@ const CommentItem = ({ comment }: Props) => {
                      <MessageSquareIcon className='size-4' />
                      Reply
                   </DropdownMenuItem>
-                  {comment.user.clerkId === userId && (
+                  {comment.user.id === user?.id && (
                      <DropdownMenuItem onClick={() => remove.mutate({ id: comment.id })}>
                         <Trash2Icon className='size-4' />
                         Delete

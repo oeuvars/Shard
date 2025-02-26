@@ -2,13 +2,13 @@ import UserAvatar from '@/components/global/user-avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { useClerk, useUser } from '@clerk/nextjs';
 import { trpc } from '@/trpc/client';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { CommentInsertSchema } from '@/db/schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { authClient } from '@/lib/auth-client';
 
 type Props = {
    videoId: string;
@@ -19,8 +19,9 @@ const CommentSchema = CommentInsertSchema.omit({ userId: true });
 
 const CommentForm = ({ videoId, onSuccess }: Props) => {
 
-   const { user } = useUser();
-   const clerk = useClerk();
+   const session = authClient.useSession();
+   const user = session.data?.user;
+
    const { showToast } = useToast();
    const utils = trpc.useUtils();
 
@@ -36,7 +37,7 @@ const CommentForm = ({ videoId, onSuccess }: Props) => {
                message: 'Please log in to add a comment',
                type: "error"
             });
-            clerk.openSignIn();
+            // clerk.openSignIn();
          } else {
             showToast({
                message: 'Could not add comment',
@@ -66,8 +67,8 @@ const CommentForm = ({ videoId, onSuccess }: Props) => {
          >
             <UserAvatar
                size="lg"
-               imageUrl={user?.imageUrl || '/icons/person.svg'}
-               name={user?.fullName || 'User'}
+               imageUrl={user?.image || '/icons/person.svg'}
+               name={user?.name || 'User'}
             />
             <div className="flex-1">
                <FormField

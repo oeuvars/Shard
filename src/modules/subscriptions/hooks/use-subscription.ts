@@ -1,6 +1,7 @@
-import { useClerk } from '@clerk/nextjs';
 import { trpc } from '@/trpc/client';
 import { useToast } from '@/hooks/use-toast';
+import { authClient } from '@/lib/auth-client';
+
 type Props = {
    userId: string;
    isSubscribed: boolean;
@@ -8,7 +9,10 @@ type Props = {
 };
 
 export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) => {
-   const clerk = useClerk();
+   const session = authClient.useSession();
+   const user = session.data?.user;
+   const isInSession = !!session.data?.session;
+
    const utils = trpc.useUtils();
    const { showToast } = useToast()
 
@@ -28,7 +32,7 @@ export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) =>
                message: "Please Log in or sign up to subscribe",
                type: "error"
             })
-            clerk.openSignIn();
+            // clerk.openSignIn();
          } else {
             showToast({
                message: "Something went wrong",
@@ -54,7 +58,7 @@ export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) =>
          })
 
          if (error.data?.code === "UNAUTHORIZED") {
-            clerk.openSignIn();
+            // clerk.openSignIn();
          }
       }
    });

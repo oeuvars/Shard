@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
-import { ClerkProvider } from "@clerk/nextjs";
 import { TRPCProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -22,16 +21,14 @@ type Props = {
 
 const Layout = ({children}: Props) => {
   return (
-    <ClerkProvider afterSignOutUrl="/">
-      <html lang="en">
-        <body className={`${plusJakartaSans.className} antialiased tracking-tight font-normal`}>
-          <TRPCProvider>
-            <Toaster />
-            {children}
-          </TRPCProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={`${plusJakartaSans.className} antialiased tracking-tight font-normal`}>
+        <TRPCProvider>
+          <Toaster />
+          {children}
+        </TRPCProvider>
+      </body>
+    </html>
   );
 }
 

@@ -2,9 +2,8 @@
 
 import FilterCarousel from '@/components/global/filter-carousel';
 import { trpc } from '@/trpc/client';
-import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 
 type Props = {
   categoryId?: string;

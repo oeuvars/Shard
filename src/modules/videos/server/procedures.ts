@@ -1,5 +1,12 @@
-import { db } from '@/db';
-import { subscriptions, users, videoReactions, videos, VideoUpdateSchema, videoViews } from '@/db/schema';
+import { db } from '@/db/drizzle';
+import {
+   subscription as subscriptions,
+   user as users,
+   videoReaction as videoReactions,
+   video as videos,
+   VideoUpdateSchema,
+   videoView as videoViews
+} from '@/db/schema';
 import { mux } from '@/lib/mux';
 import { workflow } from '@/lib/workflow';
 import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
@@ -197,14 +204,14 @@ export const videosRouter = createTRPCRouter({
 
    getOne: baseProcedure.input(z.object({ id: z.string().uuid() })).query(async ({ input, ctx }) => {
 
-      const { clerkUserId } = ctx;
+      const { userId: sessionUserId } = ctx;
 
       let userId;
 
       const [user] = await db
          .select()
          .from(users)
-         .where(inArray(users.clerkId, clerkUserId ? [clerkUserId] : []))
+         .where(inArray(users.id, sessionUserId ? [sessionUserId] : []))
 
       if (user) {
          userId = user.id;

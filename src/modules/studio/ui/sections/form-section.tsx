@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
-import { videoUpdateSchema } from "@/db/schema";
+import { VideoUpdateSchema } from "@/db/schema";
 import {
    Form,
    FormControl,
@@ -194,12 +194,12 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
       }
    });
 
-   const form = useForm<z.infer<typeof videoUpdateSchema>>({
-      resolver: zodResolver(videoUpdateSchema),
+   const form = useForm<z.infer<typeof VideoUpdateSchema>>({
+      resolver: zodResolver(VideoUpdateSchema),
       defaultValues: video,
    });
 
-   const onSubmit = (data: z.infer<typeof videoUpdateSchema>) => {
+   const onSubmit = (data: z.infer<typeof VideoUpdateSchema>) => {
       update.mutate(data);
    };
 

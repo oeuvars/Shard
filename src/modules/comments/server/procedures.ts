@@ -1,5 +1,5 @@
-import { db } from "@/db";
-import { commentReactions, comments, users } from "@/db/schema";
+import { db } from "@/db/drizzle";
+import { commentReaction as commentReactions , comment as comments, user as users } from "@/db/schema";
 import { baseProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/init";
 import { and, count, desc, eq, getTableColumns, inArray, lt, or } from "drizzle-orm";
 import { z } from "zod";
@@ -13,15 +13,15 @@ export const commentsRouter = createTRPCRouter({
          })
       )
       .mutation(async ({ ctx, input }) => {
-         const { id: userId } = ctx.user;
+         const { id: userId} = ctx.user;
          const { videoId, content } = input;
 
          const [createdComment] = await db
             .insert(comments)
             .values({
-               userId,
-               videoId,
-               content
+               userId: userId,
+               videoId: videoId,
+               content: content
             })
             .returning();
 
@@ -61,7 +61,7 @@ export const commentsRouter = createTRPCRouter({
          }))
       .query(async ({ input, ctx }) => {
 
-         const { clerkUserId } = ctx;
+         const { userId: sessionUserId } = ctx;
          const { videoId, cursor, limit } = input;
 
          let userId;
@@ -70,7 +70,7 @@ export const commentsRouter = createTRPCRouter({
             .select()
             .from(users)
             .where(
-               inArray(users.clerkId, clerkUserId ? [clerkUserId] : [])
+               inArray(users.id, sessionUserId ? [sessionUserId] : [])
             )
 
          if (user) {

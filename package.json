@@ -12,7 +12,6 @@
       "db:studio": "drizzle-kit studio"
    },
    "dependencies": {
-      "@clerk/nextjs": "^6.11.2",
       "@hookform/resolvers": "^4.1.0",
       "@mux/mux-node": "^9.0.1",
       "@mux/mux-player-react": "^3.3.0",
@@ -25,6 +24,7 @@
       "@radix-ui/react-separator": "^1.1.2",
       "@radix-ui/react-slot": "^1.1.2",
       "@radix-ui/react-tooltip": "^1.1.8",
+      "@tabler/icons-react": "^3.30.0",
       "@tanstack/react-query": "^5.66.0",
       "@trpc/client": "^11.0.0-rc.761",
       "@trpc/react-query": "^11.0.0-rc.761",
@@ -33,6 +33,7 @@
       "@upstash/ratelimit": "^2.0.5",
       "@upstash/redis": "^1.34.4",
       "@upstash/workflow": "^0.2.7",
+      "better-auth": "^1.1.21",
       "class-variance-authority": "^0.7.1",
       "clsx": "^2.1.1",
       "dotenv": "^16.4.7",
@@ -40,6 +41,7 @@
       "drizzle-zod": "^0.7.0",
       "embla-carousel-react": "^8.5.2",
       "lucide-react": "^0.475.0",
+      "motion": "^12.4.7",
       "next": "15.1.7",
       "react": "19.0.0",
       "react-dom": "19.0.0",

@@ -1,5 +1,5 @@
-import { db } from "@/db";
-import { categories } from "@/db/schema";
+import { db } from "@/db/drizzle";
+import { category } from "@/db/schema";
 
 const categoryNames = [
    "Science",
@@ -40,7 +40,7 @@ async function main() {
          updatedAt: new Date(),
       }));
 
-      await db.insert(categories).values(values);
+      await db.insert(category).values(values);
       console.log("Categories seeded successfully.");
    } catch (error) {
       console.log("Error Seeding categories:", error);
