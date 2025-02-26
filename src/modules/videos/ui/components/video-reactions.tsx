@@ -6,6 +6,7 @@ import { VideoGetOneOutput } from '../../types';
 import { trpc } from '@/trpc/client';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
+import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';
 
 type Props = {
    videoId: string;
@@ -17,7 +18,8 @@ type Props = {
 const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => {
 
    const session = authClient.useSession();
-   const user = session.data?.user;
+
+   const { openAuthModal } = useAuthModal();
 
    const utils = trpc.useUtils();
    const { showToast } = useToast();
@@ -32,7 +34,7 @@ const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => 
             type: 'error',
          })
          if (error.data?.code === "UNAUTHORIZED") {
-            // clerk.openSignIn()
+            openAuthModal()
          }
       }
    });
@@ -47,7 +49,7 @@ const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => 
             type: 'error',
          })
          if (error.data?.code === "UNAUTHORIZED") {
-            // clerk.openSignIn()
+            openAuthModal()
          }
       }
    });

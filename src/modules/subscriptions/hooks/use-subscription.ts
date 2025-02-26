@@ -1,6 +1,7 @@
 import { trpc } from '@/trpc/client';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
+import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';
 
 type Props = {
    userId: string;
@@ -9,9 +10,8 @@ type Props = {
 };
 
 export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) => {
-   const session = authClient.useSession();
-   const user = session.data?.user;
-   const isInSession = !!session.data?.session;
+
+   const { openAuthModal } = useAuthModal();
 
    const utils = trpc.useUtils();
    const { showToast } = useToast()
@@ -32,7 +32,7 @@ export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) =>
                message: "Please Log in or sign up to subscribe",
                type: "error"
             })
-            // clerk.openSignIn();
+            openAuthModal()
          } else {
             showToast({
                message: "Something went wrong",
@@ -58,7 +58,7 @@ export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) =>
          })
 
          if (error.data?.code === "UNAUTHORIZED") {
-            // clerk.openSignIn();
+            openAuthModal()
          }
       }
    });

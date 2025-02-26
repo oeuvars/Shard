@@ -8,12 +8,13 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { IconLogout2, IconLogin2, IconShoppingBag, IconDeviceTv, IconUser } from '@tabler/icons-react';
+import { IconLogout2, IconLogin2, IconDeviceTv, IconUser } from '@tabler/icons-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { authClient } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';
 
 type Props = {
     name: string | undefined;
@@ -22,6 +23,8 @@ type Props = {
 };
 
 export const UserButton = ({ name, image, isInSession }: Props) => {
+    const { openAuthModal } = useAuthModal();
+
     const getInitials = (name: string) => {
         const nameParts = name.split('');
         return nameParts
@@ -42,7 +45,7 @@ export const UserButton = ({ name, image, isInSession }: Props) => {
                 },
             });
         } else {
-            router.push('/sign-in');
+            openAuthModal();
         }
     };
 

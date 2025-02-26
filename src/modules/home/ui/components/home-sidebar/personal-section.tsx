@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthModal } from "@/app/(auth)/sign-in/hooks/use-auth-modal";
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { HeartIcon, HistoryIcon, ListVideoIcon } from "lucide-react";
@@ -13,8 +14,9 @@ const items = [
 
 export const PersonalSection = () => {
    const session = authClient.useSession();
-   const user = session.data?.user;
-   const isInSession = !!session.data?.session
+   const isInSession = !!session.data?.session;
+
+   const { openAuthModal } = useAuthModal();
 
    return (
       <SidebarGroup>
@@ -29,7 +31,7 @@ export const PersonalSection = () => {
                      onClick={(e) => {
                         if (!isInSession && item.auth) {
                            e.preventDefault();
-                           // return clerk.openSignIn()
+                           return openAuthModal()
                         }
                      }}
                      key={index}

@@ -8,18 +8,28 @@ import { Button } from '@/components/ui/button';
 import { MessageSquareIcon, MoreVertical, ThumbsDown, ThumbsUp, Trash2Icon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
+import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';
+import { useState } from 'react';
+import CommentForm from './comment-form';
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { CommentReplies } from './comment-replies';
 
 type Props = {
    comment: CommentGetManyOutput["items"][number];
+   variant?: "reply" | "comment"
 }
 
-const CommentItem = ({ comment }: Props) => {
+const CommentItem = ({ comment, variant = "comment" }: Props) => {
    const session = authClient.useSession();
    const user = session.data?.user;
 
    const utils = trpc.useUtils();
 
+   const [isReplyOpen, setIsReplyOpen] = useState<boolean>(false);
+   const [isRepliesOpen, setIsRepliesOpen] = useState<boolean>(false);
+
    const { showToast } = useToast()
+   const { openAuthModal } = useAuthModal();
 
    const remove = trpc.comments.remove.useMutation({
       onSuccess: () => {
@@ -27,7 +37,7 @@ const CommentItem = ({ comment }: Props) => {
       },
       onError: (error) => {
          if (error.data?.code === "UNAUTHORIZED") {
-            // clerk.openSignIn()
+            openAuthModal();
          } else {
             showToast({
                message: "Some error occoured",
@@ -47,7 +57,7 @@ const CommentItem = ({ comment }: Props) => {
                message: "Please log in first",
                type: "error"
             })
-            // clerk.openSignIn()
+            openAuthModal()
          } else {
             showToast({
                message: "Some error occoured",
@@ -66,7 +76,7 @@ const CommentItem = ({ comment }: Props) => {
                message: "Please log in first",
                type: "error"
             })
-            // clerk.openSignIn()
+            openAuthModal()
          } else {
             showToast({
                message: "Some error occoured",
@@ -81,8 +91,8 @@ const CommentItem = ({ comment }: Props) => {
          <div className='flex gap-4'>
             <Link href={`/users/${comment.userId}`}>
                <UserAvatar
-                  size="lg"
-                  imageUrl={comment.user.imageUrl}
+                  size={variant === "comment" ? "lg" : "sm"}
+                  imageUrl={comment.user.image}
                   name={comment.user.name}
                />
             </Link>
@@ -114,6 +124,11 @@ const CommentItem = ({ comment }: Props) => {
                         </Button>
                         <span className='text-sm text-zinc-500'>{comment.dislikeCount}</span>
                      </div>
+                     {variant === "comment" && (
+                        <Button variant="ghost" size="sm" className='h-8' onClick={() => setIsReplyOpen(true)}>
+                           Reply
+                        </Button>
+                     )}
                   </div>
                </div>
             </div>
@@ -124,10 +139,12 @@ const CommentItem = ({ comment }: Props) => {
                   </Button>
                </DropdownMenuTrigger>
                <DropdownMenuContent align='end' className='border-none bg-white/90 backdrop-blur-md'>
-                  <DropdownMenuItem onClick={() => {}}>
-                     <MessageSquareIcon className='size-4' />
-                     Reply
-                  </DropdownMenuItem>
+                  {variant === "comment" && (
+                     <DropdownMenuItem onClick={() => setIsReplyOpen(true)}>
+                        <MessageSquareIcon className='size-4' />
+                        Reply
+                     </DropdownMenuItem>
+                  )}
                   {comment.user.id === user?.id && (
                      <DropdownMenuItem onClick={() => remove.mutate({ id: comment.id })}>
                         <Trash2Icon className='size-4' />
@@ -137,6 +154,34 @@ const CommentItem = ({ comment }: Props) => {
                </DropdownMenuContent>
             </DropdownMenu>
          </div>
+         {isReplyOpen && variant === "comment" && (
+            <div className='mt-4 pl-14'>
+               <CommentForm
+                  variant='reply'
+                  parentId={comment.id}
+                  onCancel={() => setIsReplyOpen(false)}
+                  videoId={comment.videoId}
+                  onSuccess={() => {
+                     setIsReplyOpen(false);
+                     setIsRepliesOpen(true);
+                  }}
+               />
+            </div>
+         )}
+         {comment.replyCount > 0 && variant === "comment" && (
+            <div className='pl-14'>
+               <Button variant="ghost" size="sm" onClick={() => setIsRepliesOpen(current => !current)}>
+                  {isRepliesOpen ? <IconChevronUp className='size-5 my-auto' /> : <IconChevronDown className='size-5 my-auto' />}
+                  <h1 className='font-medium text-neutral-600'>{comment.replyCount} replies</h1>
+               </Button>
+            </div>
+         )}
+         {comment.replyCount > 0 && variant === "comment" && isRepliesOpen && (
+            <CommentReplies
+               parentId={comment.id}
+               videoId={comment.videoId}
+            />
+         )}
       </div>
    )
 }
