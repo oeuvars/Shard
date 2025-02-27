@@ -85,7 +85,7 @@ export const UserButton = ({ name, image, isInSession }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-3 mt-4 w-96 border-dashed rounded-lg bg-gradient-to-br from-white/90 to-white/80 backdrop-blur-xl shadow-lg transition-all duration-300">
         <DropdownMenuLabel className="rounded-md mb-2 pt-2 px-2">
-          {name ? <>Hey, {name} ✨</> : <>Hey, Person 👀</>}
+          {name ? <>Hey, {name} ✨</> : <>Hey, User 👀</>}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
