@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown';
+import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import {
   Form,
   FormControl,
@@ -105,6 +106,23 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
     },
   });
 
+  const revalidate = trpc.videos.revalidate.useMutation({
+    onSuccess: () => {
+      utils.studio.getMany.invalidate();
+      utils.studio.getOne.invalidate({ id: videoId });
+      showToast({
+        message: 'Video revalidated successfully',
+        type: 'success',
+      });
+    },
+    onError: () => {
+      showToast({
+        message: 'Error deleted video',
+        type: 'error',
+      });
+    },
+  });
+
   const restoreThumbnail = trpc.videos.restoreThumbnail.useMutation({
     onSuccess: () => {
       utils.studio.getOne.invalidate({ id: videoId });
@@ -172,8 +190,22 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                     <MoreVertical />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-white">
-                  <DropdownMenuItem onClick={() => remove.mutate({ id: video.id })}>
+                <DropdownMenuContent
+                  align="end"
+                  className="bg-gradient-to-br from-white/90 to-white/95 backdrop-blur-xl border-dashed"
+                >
+                  <DropdownMenuItem
+                    className="font-semibold text-neutral-600"
+                    onClick={() => revalidate.mutate({ id: video.id })}
+                  >
+                    <RotateCcwIcon className="size-4 mr-2" />
+                    Refresh
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-neutral-300/70" />
+                  <DropdownMenuItem
+                    className="font-semibold text-neutral-600"
+                    onClick={() => remove.mutate({ id: video.id })}
+                  >
                     <TrashIcon className="size-4 mr-2" />
                     Delete
                   </DropdownMenuItem>
