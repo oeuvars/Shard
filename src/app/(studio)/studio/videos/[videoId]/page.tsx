@@ -1,23 +1,23 @@
-import VideoView from '@/modules/studio/ui/views/video-view'
-import { HydrateClient, trpc } from '@/trpc/server'
+import VideoView from '@/modules/studio/ui/views/video-view';
+import { HydrateClient, trpc } from '@/trpc/server';
 
 type Props = {
-   params: Promise<{ videoId: string }>
-}
+  params: Promise<{ videoId: string }>;
+};
 
-export const dynamic = 'force-dynamic'
+export const dynamic = 'force-dynamic';
 
-const Page = async ({ params}: Props) => {
+const Page = async ({ params }: Props) => {
+  const { videoId } = await params;
 
-   const { videoId } = await params;
-   void trpc.studio.getOne.prefetch({ id: videoId });
-   void trpc.categorires.getMany.prefetch();
+  void trpc.studio.getOne.prefetch({ id: videoId });
+  void trpc.categorires.getMany.prefetch();
 
-   return (
-      <HydrateClient>
-         <VideoView videoId={videoId} />
-      </HydrateClient>
-   )
-}
+  return (
+    <HydrateClient>
+      <VideoView videoId={videoId} />
+    </HydrateClient>
+  );
+};
 
-export default Page
+export default Page;
