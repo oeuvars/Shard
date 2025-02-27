@@ -9,7 +9,7 @@ import { VideoGetManyOutput } from '../../types';
 import VideoMenu from './video-menu';
 import VideoThumbnail from './video-thumbnail';
 
-const videoRowCardVariants = cva('group flex min-w-0', {
+export const videoRowCardVariants = cva('group flex min-w-0', {
   variants: {
     size: {
       default: 'gap-4',
@@ -21,7 +21,7 @@ const videoRowCardVariants = cva('group flex min-w-0', {
   },
 });
 
-const thumbnailVariants = cva('rounded-md overflow-hidden', {
+export const thumbnailVariants = cva('rounded-md overflow-hidden', {
   variants: {
     size: {
       default: 'w-[38%]',
@@ -33,14 +33,10 @@ const thumbnailVariants = cva('rounded-md overflow-hidden', {
   },
 });
 
-interface VideoRowCardProps extends VariantProps<typeof videoRowCardVariants> {
+export interface VideoRowCardProps extends VariantProps<typeof videoRowCardVariants> {
   data: VideoGetManyOutput['items'][number];
   onRemove: () => void;
 }
-
-export const VideoRowCardSkeleton = () => {
-  return <div>Video Row Card Skeleton</div>;
-};
 
 export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
   const compactViews = useMemo(() => {

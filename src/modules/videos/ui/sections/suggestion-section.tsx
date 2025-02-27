@@ -3,15 +3,25 @@
 import { InfiniteScroll } from '@/components/global/infinite-scroll';
 import { DEFAULT_LIMIT } from '@/constants';
 import { trpc } from '@/trpc/client';
+import { Suspense } from 'react';
 import { VideoGridCard } from '../components/video-gridcard';
 import { VideoRowCard } from '../components/video-rowcard';
+import { SuggestionSkeleton } from '../skeletons/suggestion-skeleton';
 
 type Props = {
   videoId: string;
   isManual?: boolean;
 };
 
-const SuggestionSection = ({ videoId }: Props) => {
+const SuggestionSection = ({ videoId, isManual }: Props) => {
+  return (
+    <Suspense fallback={<SuggestionSkeleton />}>
+      <SuggestionSectionSuspense videoId={videoId} isManual={isManual} />
+    </Suspense>
+  );
+};
+
+const SuggestionSectionSuspense = ({ videoId, isManual }: Props) => {
   const [suggestions, query] = trpc.suggestions.getMany.useSuspenseInfiniteQuery(
     {
       videoId: videoId,
@@ -42,7 +52,7 @@ const SuggestionSection = ({ videoId }: Props) => {
         hasNextPage={query.hasNextPage}
         isFetchingNextPage={query.isFetchingNextPage}
         fetchNextPage={query.fetchNextPage}
-        isManual
+        isManual={isManual}
       />
     </>
   );
