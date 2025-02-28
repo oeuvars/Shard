@@ -9,9 +9,11 @@ type Props = {};
 
 export const SearchInput = (props: Props) => {
   const searchParams = useSearchParams();
-  const searched = searchParams.get('query') || '';
+  const searchedQuery = searchParams.get('query') || '';
+  const searchedCategory = searchParams.get('categoryId') || '';
+
   const router = useRouter();
-  const [searchQuery, setSearchQuery] = useState<string>(searched);
+  const [searchQuery, setSearchQuery] = useState<string>(searchedQuery);
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,6 +22,10 @@ export const SearchInput = (props: Props) => {
     const newQuery = searchQuery.trim();
 
     url.searchParams.set('query', encodeURIComponent(newQuery));
+
+    if (searchedCategory) {
+      url.searchParams.set('categoryId', searchedCategory);
+    }
     if (newQuery === '') {
       url.searchParams.delete('query');
     }
