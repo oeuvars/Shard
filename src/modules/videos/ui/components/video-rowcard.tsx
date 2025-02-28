@@ -35,7 +35,7 @@ export const thumbnailVariants = cva('rounded-md overflow-hidden', {
 
 export interface VideoRowCardProps extends VariantProps<typeof videoRowCardVariants> {
   data: VideoGetManyOutput['items'][number];
-  onRemove: () => void;
+  onRemove?: () => void;
 }
 
 export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {

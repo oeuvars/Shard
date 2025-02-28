@@ -1,4 +1,4 @@
-import { VideoGridcardSkeleton } from './video-gridcard-skeleton';
+import { VideoGridCardSkeleton } from './video-gridcard-skeleton';
 import { VideoRowCardSkeleton } from './video-rowcard-skeleton';
 
 export const SuggestionSkeleton = () => {
@@ -10,7 +10,7 @@ export const SuggestionSkeleton = () => {
         ))}
         <div className="block md:hidden space-y-10">
           {Array.from({ length: 8 }).map((_, index) => (
-            <VideoGridcardSkeleton key={index} />
+            <VideoGridCardSkeleton key={index} />
           ))}
         </div>
       </div>

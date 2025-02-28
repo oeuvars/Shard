@@ -5,7 +5,7 @@ import VideoThumbnail from './video-thumbnail';
 
 type Props = {
   data: VideoGetManyOutput['items'][number];
-  onRemove: () => void;
+  onRemove?: () => void;
 };
 
 export const VideoGridCard = ({ data, onRemove }: Props) => {
