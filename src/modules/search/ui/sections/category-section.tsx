@@ -4,6 +4,7 @@ import FilterCarousel from '@/components/global/filter-carousel';
 import { trpc } from '@/trpc/client';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
+import { CategorySkeleton } from '../skeletons/category-skeleton';
 
 type Props = {
   categoryId?: string;
@@ -15,10 +16,6 @@ export const CategorySection = ({ categoryId }: Props) => {
       <CategorySectionSuspense categoryId={categoryId} />
     </Suspense>
   );
-};
-
-const CategorySkeleton = () => {
-  return <FilterCarousel isLoading data={[]} onSelect={() => {}} />;
 };
 
 const CategorySectionSuspense = ({ categoryId }: Props) => {

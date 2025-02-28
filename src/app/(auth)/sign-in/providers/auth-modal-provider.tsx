@@ -1,14 +1,13 @@
-"use client"
+'use client';
 
-import { createContext, useState } from "react";
-import AuthModal from "../page"
+import { createContext, useState } from 'react';
+import AuthModal from '../auth-modal';
 
 export const AuthModalContext = createContext<AuthModalContextType>({
   openAuthModal: () => {},
   closeAuthModal: () => {},
   isAuthModalOpen: false,
 });
-
 
 interface AuthModalContextType {
   openAuthModal: () => void;
@@ -23,7 +22,9 @@ export const AuthModalProvider = ({ children }: { children: React.ReactNode }) =
   const closeAuthModal = () => setIsModalOpen(false);
 
   return (
-    <AuthModalContext.Provider value={{ openAuthModal, closeAuthModal, isAuthModalOpen: isModalOpen }}>
+    <AuthModalContext.Provider
+      value={{ openAuthModal, closeAuthModal, isAuthModalOpen: isModalOpen }}
+    >
       {children}
       <AuthModal isOpen={isModalOpen} onClose={closeAuthModal} />
     </AuthModalContext.Provider>

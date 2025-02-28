@@ -7,6 +7,7 @@ import { VideoGridCard } from '@/modules/videos/ui/components/video-gridcard';
 import { VideoRowCard } from '@/modules/videos/ui/components/video-rowcard';
 import { trpc } from '@/trpc/client';
 import { Suspense } from 'react';
+import { ResultSkeleton } from '../skeletons/result-skeleton';
 
 type Props = {
   query: string | undefined;
@@ -15,7 +16,7 @@ type Props = {
 
 export const ResultSection = ({ query, categoryId }: Props) => {
   return (
-    <Suspense>
+    <Suspense fallback={<ResultSkeleton />}>
       <ResultSectionSuspense query={query} categoryId={categoryId} />
     </Suspense>
   );

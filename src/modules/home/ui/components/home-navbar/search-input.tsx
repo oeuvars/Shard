@@ -2,22 +2,21 @@
 
 import { IconX } from '@tabler/icons-react';
 import { SearchIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
 type Props = {};
 
 export const SearchInput = (props: Props) => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const searchParams = useSearchParams();
+  const searched = searchParams.get('query') || '';
   const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState<string>(searched);
 
   const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const url = new URL(
-      '/search',
-      process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000',
-    );
+    const url = new URL('/search', process.env.NEXT_PUBLIC_APP_URL);
     const newQuery = searchQuery.trim();
 
     url.searchParams.set('query', encodeURIComponent(newQuery));

@@ -149,9 +149,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
     update.mutate(data);
   };
 
-  const URL = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : `http://localhost:3000/videos/${videoId}`;
+  const URL = `${process.env.NEXT_PUBLIC_APP_URL}/videos/${videoId}`;
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
   const onCopy = async () => {

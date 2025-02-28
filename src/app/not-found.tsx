@@ -1,20 +1,22 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from 'next/image';
+import Link from 'next/link';
 
-type Props = {}
+type Props = {};
 
 const NotFound = (props: Props) => {
   return (
-   <div className="flex min-h-[100dvh] flex-col">
+    <div className="flex min-h-[100dvh] flex-col">
       <main className="flex-1 flex items-center justify-center bg-gray-100 px-4 py-12 dark:bg-gray-950">
         <div className="mx-auto max-w-md text-center">
           <div className="mb-20">
-            <Image src="/icons/shard.svg" alt="/shard" height={1080} width={1080}/>
+            <Image src="/icons/shard.svg" alt="/shard" height={1080} width={1080} />
           </div>
-          <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl">Oops! Lost in space</h1>
+          <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl">
+            Oops! Lost in space
+          </h1>
           <p className="mb-8 text-gray-500 dark:text-gray-400">
-            It looks like the page you're looking for has drifted off into the cosmos. Don't worry, we'll help you find
-            your way back.
+            It looks like the page you&apos;re looking for has drifted off into the cosmos. Dont
+            worry, we&apos;ll help you find your way back.
           </p>
           <div className="flex justify-center gap-4">
             <Link
@@ -35,7 +37,7 @@ const NotFound = (props: Props) => {
         </div>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default NotFound
+export default NotFound;

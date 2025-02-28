@@ -18,7 +18,7 @@ const VideoMenu = ({ videoId, variant = 'ghost', onRemove }: Props) => {
   const { showToast } = useToast();
 
   const onShare = () => {
-    const URL = `${`https://${process.env.VERCEL_URL}` || 'http://localhost:3000'}/videos/${videoId}`;
+    const URL = `${process.env.NEXT_PUBLIC_APP_URL}/videos/${videoId}`;
 
     navigator.clipboard.writeText(URL);
     showToast({

@@ -1,17 +1,14 @@
-
-import HomeLayout from '@/modules/home/ui/layouts/home-layout'
-
+import HomeLayout from '@/modules/home/ui/layouts/home-layout';
+import { ReactNode } from 'react';
 
 type Props = {
-   children: React.ReactNode
-}
+  children: ReactNode;
+};
+
+export const dynamic = 'force-dynamic';
 
 const Layout = ({ children }: Props) => {
-  return (
-   <HomeLayout>
-      {children}
-   </HomeLayout>
-  )
-}
+  return <HomeLayout>{children}</HomeLayout>;
+};
 
-export default Layout
+export default Layout;
