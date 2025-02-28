@@ -22,7 +22,7 @@ export const VideoInfo = ({ data, onRemove }: Props) => {
 
   return (
     <div className="flex gap-3">
-      <Link href={`/users/${data.user.id}`}>
+      <Link href={`/users/${data.user.id}`} className="my-auto">
         <UserAvatar imageUrl={data.user.image} name={data.user.name} />
       </Link>
       <div className="min-w-0 flex-1">

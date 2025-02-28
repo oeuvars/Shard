@@ -16,17 +16,17 @@ import { trpc } from '@/trpc/client';
 import { Globe2Icon, LockIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { VideosSectionSkeleton } from '../skeletons/video-skeleton';
+import { VideoSectionSkeleton } from '../skeletons/video-skeleton';
 
-const VideosSection = () => {
+const VideoSection = () => {
   return (
-    <Suspense fallback={<VideosSectionSkeleton />}>
-      <VideosSectionSuspense />
+    <Suspense fallback={<VideoSectionSkeleton />}>
+      <VideoSectionSuspense />
     </Suspense>
   );
 };
 
-const VideosSectionSuspense = () => {
+const VideoSectionSuspense = () => {
   const [videos, query] = trpc.studio.getMany.useSuspenseInfiniteQuery(
     {
       limit: DEFAULT_LIMIT,
@@ -110,4 +110,4 @@ const VideosSectionSuspense = () => {
   );
 };
 
-export default VideosSection;
+export default VideoSection;
