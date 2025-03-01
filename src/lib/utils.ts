@@ -83,3 +83,15 @@ export function formatDate(date: Date): string {
 
   return relativeTime;
 }
+
+const base62 = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+export function encodeBase62(num: number) {
+  let encoded = '';
+  while (num) {
+    const remainder = num % 62;
+    num = Math.floor(num / 62);
+    encoded = base62[remainder] + encoded;
+  }
+  return encoded || '0';
+}

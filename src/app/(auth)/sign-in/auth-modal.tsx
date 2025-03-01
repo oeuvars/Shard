@@ -80,8 +80,8 @@ const AuthModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <Image src="/icons/shard.svg" alt="shard" width={30} height={30} />
-                  <h1 className="text-xl font-bold text-zinc-800 my-auto tracking-tight">Shard</h1>
+                  <Image src="/icons/tkiara.svg" alt="tkiara" width={30} height={30} />
+                  <h1 className="text-xl font-bold text-zinc-800 my-auto tracking-tight">tkiara</h1>
                 </motion.div>
                 <motion.div
                   initial={{ y: 10, opacity: 0 }}

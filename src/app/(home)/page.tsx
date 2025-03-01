@@ -12,7 +12,7 @@ type Props = {
 
 const Page = async ({ searchParams }: Props) => {
   const { categoryId } = await searchParams;
-  void trpc.categorires.getMany.prefetch();
+  void trpc.categories.getMany.prefetch();
   void trpc.videos.getMany.prefetchInfinite({ categoryId, limit: DEFAULT_LIMIT });
 
   return (

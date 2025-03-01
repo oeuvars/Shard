@@ -9,7 +9,7 @@ const NotFound = (props: Props) => {
       <main className="flex-1 flex items-center justify-center bg-gray-100 px-4 py-12 dark:bg-gray-950">
         <div className="mx-auto max-w-md text-center">
           <div className="mb-20">
-            <Image src="/icons/shard.svg" alt="/shard" height={1080} width={1080} />
+            <Image src="/icons/tkiara.svg" alt="/tkiara" height={1080} width={1080} />
           </div>
           <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl">
             Oops! Lost in space

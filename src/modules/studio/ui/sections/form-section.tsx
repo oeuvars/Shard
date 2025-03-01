@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button';
 import { DropdownMenuContent, DropdownMenuItem } from '@/components/ui/dropdown';
-import { DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import {
   Form,
   FormControl,
@@ -34,7 +33,6 @@ import {
   ImagePlus,
   LockIcon,
   MoreVertical,
-  RotateCcwIcon,
   SparklesIcon,
   TrashIcon,
 } from 'lucide-react';
@@ -47,6 +45,7 @@ import { z } from 'zod';
 import ThumbnailGenerate from '../components/global/thumbnail-generate';
 import ThumbnailUpload from '../components/global/thumbnail-upload';
 import { FormSectionSkeleton } from '../skeletons/form-skeleton';
+import { IconLoader } from '@tabler/icons-react';
 
 type Props = {
   videoId: string;
@@ -69,7 +68,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
   const [thumbnailGenerateOpen, setThumbnailGenerateOpen] = useState<boolean>(false);
 
   const [video] = trpc.studio.getOne.useSuspenseQuery({ id: videoId });
-  const [categorires] = trpc.categorires.getMany.useSuspenseQuery();
+  const [categorires] = trpc.categories.getMany.useSuspenseQuery();
 
   const update = trpc.videos.update.useMutation({
     onSuccess: () => {
@@ -96,45 +95,11 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
         message: 'Video deleted successfully',
         type: 'success',
       });
-      router.refresh();
+      router.push("/studio");
     },
     onError: () => {
       showToast({
         message: 'Error deleted video',
-        type: 'error',
-      });
-    },
-  });
-
-  const revalidate = trpc.videos.revalidate.useMutation({
-    onSuccess: () => {
-      utils.studio.getMany.invalidate();
-      utils.studio.getOne.invalidate({ id: videoId });
-      showToast({
-        message: 'Video revalidated successfully',
-        type: 'success',
-      });
-    },
-    onError: () => {
-      showToast({
-        message: 'Error deleted video',
-        type: 'error',
-      });
-    },
-  });
-
-  const restoreThumbnail = trpc.videos.restoreThumbnail.useMutation({
-    onSuccess: () => {
-      utils.studio.getOne.invalidate({ id: videoId });
-      showToast({
-        message: 'Thumbnail restored successfully',
-        type: 'success',
-      });
-      router.refresh();
-    },
-    onError: () => {
-      showToast({
-        message: 'Could not restore thumbnail',
         type: 'error',
       });
     },
@@ -182,7 +147,16 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
             </div>
             <div className="flex items-center gap-x-2">
               <Button type="submit" disabled={update.isPending || !form.formState.isDirty}>
-                Save
+                {update.isPending || !form.formState.isDirty ? (
+                  <>
+                    <IconLoader className='animate-spin'/>
+                    <h1>Saving</h1>
+                  </>
+                ) : (
+                  <>
+                    <h1>Save</h1>
+                  </>
+                )}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -194,14 +168,6 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                   align="end"
                   className="bg-gradient-to-br from-white/90 to-white/95 backdrop-blur-xl border-dashed"
                 >
-                  <DropdownMenuItem
-                    className="font-semibold text-neutral-600"
-                    onClick={() => revalidate.mutate({ id: video.id })}
-                  >
-                    <RotateCcwIcon className="size-4 mr-2" />
-                    Refresh
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-neutral-300/70" />
                   <DropdownMenuItem
                     className="font-semibold text-neutral-600"
                     onClick={() => remove.mutate({ id: video.id })}
@@ -238,7 +204,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                       <Textarea
                         {...field}
                         value={field.value ?? ''}
-                        rows={10}
+                        rows={8}
                         className="resize-none pr-10"
                         placeholder="Add a description to your video"
                       />
@@ -254,7 +220,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                   <FormItem>
                     <FormLabel>Thumbnail</FormLabel>
                     <FormControl>
-                      <div className="border border-dashed rounded-lg border-neutral-400 relative h-[84px] w-[153px] group">
+                      <div className="border border-dashed rounded-lg border-neutral-400 relative aspect-video w-96 group">
                         <Image
                           src={video.thumbnailUrl || '/images/placeholder.svg'}
                           className="object-cover object-center rounded-lg p-0.5"
@@ -265,7 +231,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                           <DropdownMenuTrigger asChild>
                             <Button
                               type="button"
-                              className="bg-black/50 hover:bg-black/50 absolute top-1 right-1 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 size-7"
+                              className="bg-black/50 hover:bg-black/50 backdrop-blur-md animate absolute top-2 right-2 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 size-7"
                               size="icon"
                             >
                               <MoreVertical className="text-white" />
@@ -279,12 +245,6 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                             <DropdownMenuItem onClick={() => setThumbnailGenerateOpen(true)}>
                               <SparklesIcon className="size-4 mr-1" />
                               AI-generated
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => restoreThumbnail.mutate({ id: video.id })}
-                            >
-                              <RotateCcwIcon className="size-4 mr-1" />
-                              Restore
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -325,13 +285,13 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
 
             <div className="flex flex-col gap-y-8 lg:col-span-2">
               <div className="flex flex-col gap-4 bg-[#F9F9F9] rounded-xl overflow-hidden h-fit">
-                <div className="aspect-video overflow-hidden relative">
+                <div className="aspect-video flex justify-center items-center bg-neutral-800 overflow-hidden relative">
                   <VideoPlayer
-                    playbackId={video.videoPlaybackId}
+                    playbackId={video.videoUrl}
                     thumbnailUrl={video.thumbnailUrl}
                   />
                 </div>
-                <div className="p-4 flex flex-col gap-y-6">
+                <div className="p-4 flex flex-col gap-y-4">
                   <div className="flex justify-between items-center gap-x-2">
                     <div className="flex flex-col gap-y-1">
                       <p className="text-zinc-500 font-medium text-xs">Video Link</p>
@@ -362,15 +322,6 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                       <p className="text-zinc-500 text-xs">Video Status</p>
                       <p className="text-sm font-medium">
                         {snakeToTitle(video.videoStatus || 'preparing')}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center gap-x-2">
-                    <div className="flex flex-col gap-y-1">
-                      <p className="text-zinc-500 text-xs">Track Status</p>
-                      <p className="text-sm font-medium">
-                        {snakeToTitle(video.videoTrackStatus || 'No Subtitles')}
                       </p>
                     </div>
                   </div>

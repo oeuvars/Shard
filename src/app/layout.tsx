@@ -11,8 +11,8 @@ const figtree = Figtree({
 });
 
 export const metadata: Metadata = {
-  title: "Shard",
-  description: "Shard is a video sharing platform that allows users to watch, upload, and share videos.",
+  title: "tkiara",
+  description: "tkiara is a video sharing platform that allows users to watch, upload, and share videos.",
   keywords: "video sharing, streaming, entertainment, social media, content creation, online videos",
 };
 

@@ -11,7 +11,7 @@ import { videosRouter } from '@/modules/videos/server/procedures';
 import { createTRPCRouter } from '../init';
 
 export const appRouter = createTRPCRouter({
-  categorires: categoriesRouter,
+  categories: categoriesRouter,
   studio: studioRouter,
   videos: videosRouter,
   videoViews: videoViewsRouter,

@@ -1,49 +1,263 @@
-"use client"
+'use client';
 
-import { ResponsiveModal } from '@/components/global/responsive-modal'
-import { Button } from '@/components/ui/button'
-import { useToast } from '@/hooks/use-toast'
-import { trpc } from '@/trpc/client'
-import { Loader2, PlusIcon } from 'lucide-react'
-import { StudioUploader } from './studio-uploader'
-import { useRouter } from 'next/navigation'
+import { ResponsiveModal } from '@/components/global/responsive-modal';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Progress } from '@/components/ui/progress';
+import { useToast } from '@/hooks/use-toast';
+import { trpc } from '@/trpc/client';
+import { IconUpload } from '@tabler/icons-react';
+import { AlertCircle, CheckCircle, Loader2, PlusIcon, Upload } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
-type Props = {}
-
-const StudioUpload = (props: Props) => {
-
+const StudioUpload = () => {
   const { showToast } = useToast();
   const router = useRouter();
-
   const utils = trpc.useUtils();
-  const create = trpc.videos.create.useMutation({
-    onSuccess: () => {
-      showToast({ message: 'Video created successfully', type: 'success' })
-      utils.studio.getMany.invalidate()
+
+  const [file, setFile] = useState<File | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'pending' | 'success' | 'error'>(
+    'idle',
+  );
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const createSignedUrl = trpc.videos.createSignedUrl.useMutation({
+    onError: error => {
+      setUploadStatus('error');
+      showToast({
+        message: error.message || 'Failed to get upload URL',
+        type: 'error',
+      });
     },
-    onError: (error) => {
-      showToast({ message: error.message, type: 'error' })
+  });
+
+  const finalizeUpload = trpc.videos.finalizeUpload.useMutation({
+    onSuccess: data => {
+      setUploadStatus('success');
+      showToast({
+        message: 'Video uploaded successfully',
+        description: 'You will be redirected to your studio soon',
+        type: 'success',
+      });
+      utils.studio.getMany.invalidate();
+      if (data?.videoId) {
+        setTimeout(() => {
+          router.push(`/studio/videos/${data.videoId}`);
+        }, 1500);
+      }
+    },
+    onError: error => {
+      setUploadStatus('error');
+      showToast({
+        message: error.message || 'Failed to process video',
+        description: 'Please reupload and try again',
+        type: 'error',
+      });
+    },
+  });
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
     }
-  })
+  };
 
-  const onSuccess = () => {
-    if (!create.data?.video.id) return;
-    create.reset();
+  const handleUpload = async () => {
+    if (!file) {
+      showToast({
+        message: 'Please select a video file',
+        type: 'error',
+      });
+      return;
+    }
 
-    router.push(`/studio/videos/${create.data?.video.id}`)
-  }
+    setUploadStatus('pending');
+    setUploadProgress(0);
+
+    try {
+      const { signedUrl, videoId, fileName } = await createSignedUrl.mutateAsync({
+        name: file.name,
+        size: file.size,
+        type: file.type,
+      });
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.upload.addEventListener('progress', event => {
+        if (event.lengthComputable) {
+          const progress = Math.round((event.loaded / event.total) * 100);
+          setUploadProgress(progress);
+        }
+      });
+
+      xhr.addEventListener('load', async () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          await finalizeUpload.mutateAsync({ videoId, fileName });
+          setUploadProgress(100);
+          setUploadStatus('success');
+        } else {
+          const errorMessage = `Upload failed with status: ${xhr.status}, ${xhr.statusText}, Response: ${xhr.responseText}`;
+          console.error(errorMessage);
+          throw new Error(errorMessage);
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        const errorMessage = 'Network error occurred during upload';
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+      });
+
+      xhr.addEventListener('timeout', () => {
+        const errorMessage = 'Upload timed out';
+        console.error(errorMessage);
+        throw new Error(errorMessage);
+      });
+
+      xhr.open('PUT', signedUrl);
+      xhr.setRequestHeader('Content-Type', file.type);
+      xhr.timeout = 60000; // 60 seconds timeout
+      xhr.send(file);
+    } catch (error) {
+      setUploadStatus('error');
+      showToast({
+        message: error instanceof Error ? error.message : 'An unexpected error occurred',
+        type: 'error',
+      });
+    }
+  };
+
+  const resetUpload = () => {
+    setFile(null);
+    setUploadStatus('idle');
+    setUploadProgress(0);
+    createSignedUrl.reset();
+    finalizeUpload.reset();
+  };
+
+  const renderUploadContent = () => {
+    if (uploadStatus === 'idle') {
+      return (
+        <div className="flex flex-col items-center space-y-4 p-6">
+          <Label
+            htmlFor="file-upload"
+            className="flex flex-col items-center justify-center w-full h-32 p-6 border-2 border-dashed border-neutral-200 rounded-xl cursor-pointer hover:border-neutral-300 transition-colors"
+          >
+            <IconUpload className="w-10 h-10 mb-2 text-neutral-800" />
+            <p className="text-sm text-gray-500">Click or drag to upload a video</p>
+            <input
+              id="file-upload"
+              type="file"
+              accept="video/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+          </Label>
+          {file && (
+            <div className="w-full max-w-md truncate mx-auto flex justify-center text-sm">
+              <span className="font-medium">{file.name}</span>&nbsp;(
+              {(file.size / (1024 * 1024)).toFixed(2)} MB)
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleUpload}
+              disabled={!file || createSignedUrl.isPending || finalizeUpload.isPending}
+            >
+              Upload
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    if (uploadStatus === 'pending') {
+      return (
+        <div className="flex flex-col items-center space-y-4 p-6">
+          <Loader2 className="animate-spin w-10 h-10 text-primary" />
+          <p className="font-medium">Uploading your video...</p>
+          <div className="w-full max-w-md">
+            <Progress value={uploadProgress} className="h-2" />
+            <p className="text-sm text-right mt-1">{uploadProgress}%</p>
+          </div>
+          <p className="text-sm text-gray-500">
+            This may take a few minutes depending on the file size
+          </p>
+        </div>
+      );
+    }
+
+    if (uploadStatus === 'success') {
+      return (
+        <div className="flex flex-col items-center space-y-4 p-6">
+          <CheckCircle className="text-green-500 w-10 h-10" />
+          <p className="font-medium">Upload successful!</p>
+          <p className="text-sm text-gray-500">Redirecting to your video page...</p>
+          <Button variant="outline" onClick={resetUpload}>
+            Upload another video
+          </Button>
+        </div>
+      );
+    }
+
+    if (uploadStatus === 'error') {
+      return (
+        <div className="flex flex-col items-center space-y-4 p-6">
+          <AlertCircle className="text-red-500 w-10 h-10" />
+          <p className="font-medium">Upload failed</p>
+          <p className="text-sm text-gray-500">
+            There was a problem uploading your video. Please try again.
+          </p>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="default" onClick={resetUpload}>
+              Try again
+            </Button>
+          </div>
+        </div>
+      );
+    }
+
+    return null;
+  };
 
   return (
     <section>
-      <ResponsiveModal title='Upload a video' open={!!create.data} onOpenChange={() => create.reset()}>
-        {create.data?.url ? <StudioUploader endpoint={create.data?.url} onSuccess={onSuccess} /> : <Loader2 className='animate-spin' />}
+      <ResponsiveModal
+        title="Upload a video"
+        open={isModalOpen}
+        onOpenChange={open => {
+          if (!open || uploadStatus !== 'pending') {
+            setIsModalOpen(open);
+            if (!open) resetUpload();
+          }
+        }}
+      >
+        {renderUploadContent()}
       </ResponsiveModal>
-      <Button variant="secondary" onClick={() => create.mutate()} disabled={create.isPending}>
-        {create.isPending ? <Loader2 className='animate-spin'/> : <PlusIcon />}
-        Create
+
+      <Button
+        variant="secondary"
+        onClick={() => setIsModalOpen(true)}
+        disabled={createSignedUrl.isPending || finalizeUpload.isPending}
+        className="flex items-center gap-2"
+      >
+        {createSignedUrl.isPending || finalizeUpload.isPending ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <PlusIcon className="h-4 w-4" />
+        )}
+        Upload Video
       </Button>
     </section>
-  )
-}
+  );
+};
 
-export default StudioUpload
+export default StudioUpload;

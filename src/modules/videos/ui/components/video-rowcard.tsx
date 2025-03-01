@@ -50,12 +50,7 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
   return (
     <div className={videoRowCardVariants({ size })}>
       <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
-        <VideoThumbnail
-          imageUrl={data.thumbnailUrl}
-          previewUrl={data.previewUrl}
-          title={data.title}
-          duration={data.duration}
-        />
+        <VideoThumbnail imageUrl={data.thumbnailUrl} title={data.title} duration={data.duration} />
       </Link>
 
       <div className="flex-1 min-w-0">

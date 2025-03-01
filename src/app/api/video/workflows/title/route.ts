@@ -32,17 +32,17 @@ export const { POST } = serve(async context => {
     return existingVideo;
   });
 
-  const transcript = await context.run('get-transcript', async () => {
-    const trackUrl = `https://stream.mux.com/${video.videoPlaybackId}/text/${video.videoTrackId}.txt`;
-    const response = await fetch(trackUrl);
-    const text = await response.text();
+  // const transcript = await context.run('get-transcript', async () => {
+  //   const trackUrl = `https://stream.mux.com/${video.videoPlaybackId}/text/${video.videoTrackId}.txt`;
+  //   const response = await fetch(trackUrl);
+  //   const text = await response.text();
 
-    if (!text) {
-      throw new Error('Transcript not found');
-    }
+  //   if (!text) {
+  //     throw new Error('Transcript not found');
+  //   }
 
-    return text;
-  });
+  //   return text;
+  // });
 
   const { body } = await context.api.openai.call('generate-title', {
     baseURL: 'https://api.deepseek.com',

@@ -16,5 +16,9 @@
 
 .cl-userButtonPopoverCard.cl-popoverBox.cl-userButton-popover {
   top: 70px !important;
-  left: 1865px !important
+  left: 1865px !important;
+}
+
+.next-video-alert.next-video-alert-uploading {
+  display: none !important;
 }

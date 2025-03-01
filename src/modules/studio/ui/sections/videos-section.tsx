@@ -61,7 +61,6 @@ const VideoSectionSuspense = () => {
                         <div className="relative w-36 h-20 shrink-0">
                           <VideoThumbnail
                             imageUrl={video.thumbnailUrl}
-                            previewUrl={video.previewUrl}
                             title={video.title}
                             duration={video.duration || 0}
                           />

@@ -14,7 +14,7 @@ export const dynamic = 'force-dynamic';
 const Page = async ({ searchParams }: Props) => {
   const { query, categoryId } = await searchParams;
 
-  void trpc.categorires.getMany.prefetch();
+  void trpc.categories.getMany.prefetch();
   void trpc.search.getMany.prefetchInfinite({
     query,
     categoryId,

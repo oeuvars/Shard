@@ -1,34 +1,28 @@
-"use client"
+'use client';
 
-import MuxPlayer from "@mux/mux-player-react"
+import Video from 'next-video';
+import Player from 'next-video/player';
 
 type Props = {
-   playbackId: string | null;
-   thumbnailUrl: string | null;
-   autoPlay?: boolean;
-   onPlay?: () => void;
-}
+  playbackId: string | null;
+  thumbnailUrl: string | null;
+  autoPlay?: boolean;
+  onPlay?: () => void;
+};
 
 export const VideoPlayerSkeleton = () => {
-   return (
-      <div className="aspect-video bg-black rounded-xl "/>
-   )
-}
+  return <div className="aspect-video bg-black rounded-xl " />;
+};
 
-const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay = true, onPlay }: Props) => {
+const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay = false }: Props) => {
+  return (
+    <Player
+      src={playbackId || ''}
+      autoPlay={autoPlay}
+      poster={thumbnailUrl || '/images/placeholder.svg'}
+      className='overflow-hidden'
+    />
+  );
+};
 
-   return (
-      <MuxPlayer
-         playbackId={playbackId || ""}
-         poster={thumbnailUrl || "/images/placeholder.svg"}
-         playerInitTime={0}
-         autoPlay={autoPlay}
-         thumbnailTime={0}
-         className="size-full object-contain"
-         accentColor="#cd201f"
-         onPlay={onPlay}
-      />
-   )
-}
-
-export default VideoPlayer
+export default VideoPlayer;

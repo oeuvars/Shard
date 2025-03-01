@@ -28,7 +28,7 @@ export const StudioNavbar = async () => {
             <div className="flex items-center flex-shrink-0 gap-4">
                <SidebarTrigger />
                <Link href="/studio" className='flex gap-2'>
-                  <Image src="/logos/shard.svg" alt="Shard" width={35} height={35} />
+                  <Image src="/logos/tkiara.svg" alt="tkiara" width={35} height={35} />
                   <h1 className={`${instrumentSerif.className} text-3xl my-auto font-semibold text-neutral-800 tracking-tight`}>Studio</h1>
                </Link>
             </div>

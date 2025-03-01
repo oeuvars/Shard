@@ -1,4 +1,7 @@
 import type { NextConfig } from 'next';
+import { withNextVideo } from 'next-video/process';
+
+/** @type {import('next').NextConfig} */
 
 const nextConfig: NextConfig = {
   output: 'standalone',
@@ -7,12 +10,6 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'image.mux.com',
         port: '',
         pathname: '/**',
       },
@@ -32,4 +29,11 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextVideo(nextConfig, {
+  provider: 'amazon-s3',
+  providerConfig: {
+    'amazon-s3': {
+      endpoint: 'https://s3.amazonaws.com',
+    },
+  },
+});

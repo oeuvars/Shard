@@ -44,7 +44,7 @@ const Page = () => {
       <div className="absolute top-4 left-4">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <IconChevronLeft className="size-5" />
-          <Image src="/icons/shard.svg" alt="shard" width={30} height={30} />
+          <Image src="/icons/tkiara.svg" alt="tkiara" width={30} height={30} />
         </Link>
       </div>
 
@@ -61,8 +61,8 @@ const Page = () => {
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <Image src="/icons/shard.svg" alt="shard" width={30} height={30} />
-              <h1 className="text-xl font-bold text-zinc-800 my-auto tracking-tight">Shard</h1>
+              <Image src="/icons/tkiara.svg" alt="tkiara" width={30} height={30} />
+              <h1 className="text-xl font-bold text-zinc-800 my-auto tracking-tight">tkiara</h1>
             </motion.div>
             <motion.div
               initial={{ y: 10, opacity: 0 }}

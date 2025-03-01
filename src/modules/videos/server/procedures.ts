@@ -1,3 +1,4 @@
+import { s3Client } from '@/config/s3-init';
 import { DEFAULT_LIMIT } from '@/constants';
 import { db } from '@/db/drizzle';
 import {
@@ -8,36 +9,37 @@ import {
   VideoUpdateSchema,
   videoView as videoViews,
 } from '@/db/schema';
-import { mux } from '@/lib/mux';
 import { workflow } from '@/lib/workflow';
 import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, getTableColumns, inArray, isNotNull, lt, or } from 'drizzle-orm';
-import { UTApi } from 'uploadthing/server';
 import { z } from 'zod';
+import { videoUtils } from './utils';
+import { UTApi } from 'uploadthing/server';
+
+const videoFileSizeLimit = 1024 * 1024 * 1024; // 1 GB
+
+const VIDEO_SCHEMA = z.object({
+  name: z.string(),
+  size: z.number().max(videoFileSizeLimit, 'Video file size should not exceed 50MB'),
+  type: z.string().refine(
+    type =>
+      [
+        'video/mp4',
+        'video/webm',
+        'video/ogg',
+        'video/quicktime', // .mov
+        'video/x-msvideo', // .avi
+      ].includes(type),
+    { message: 'Invalid video file type' },
+  ),
+});
 
 export const videosRouter = createTRPCRouter({
-  create: protectedProcedure.mutation(async ({ ctx }) => {
+  createSignedUrl: protectedProcedure.input(VIDEO_SCHEMA).mutation(async ({ ctx, input }) => {
     try {
       const { id: userId } = ctx.user;
-
-      const upload = await mux.video.uploads.create({
-        new_asset_settings: {
-          passthrough: userId,
-          playback_policy: ['public'],
-          input: [
-            {
-              generated_subtitles: [
-                {
-                  language_code: 'en',
-                  name: 'English',
-                },
-              ],
-            },
-          ],
-        },
-        cors_origin: '*', // TODO: In production, set this to my domain
-      });
+      const fileName = `${new Date().toISOString()}-${crypto.randomUUID()}.mp4`;
 
       const [video] = await db
         .insert(videos)
@@ -45,30 +47,80 @@ export const videosRouter = createTRPCRouter({
           userId,
           title: 'New video',
           videoStatus: 'waiting',
-          videoUploadId: upload.id,
+          videoUploadId: fileName,
         })
         .returning();
 
       if (!video) {
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to create video',
+          message: 'Failed to create video record',
         });
       }
 
+      const signedUrl = await videoUtils.generateUploadUrl(fileName, input.type);
+
       return {
-        video: video,
-        url: upload.url,
+        signedUrl,
+        videoId: video.id,
+        fileName,
       };
     } catch (error) {
-      console.error('Error creating video:', error);
-
+      console.error('Error creating signed URL:', error);
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
-        message: 'An error occurred while creating the video',
+        message: 'An error occurred while preparing the upload',
       });
     }
   }),
+
+  finalizeUpload: protectedProcedure
+    .input(
+      z.object({
+        videoId: z.string(),
+        fileName: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const { id: userId } = ctx.user;
+        const { videoId, fileName } = input;
+
+        const [existingVideo] = await db
+          .select()
+          .from(videos)
+          .where(and(eq(videos.id, videoId), eq(videos.userId, userId)));
+
+        if (!existingVideo) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Video not found',
+          });
+        }
+
+        const videoUrl = videoUtils.getVideoUrl(fileName);
+
+        const [video] = await db
+          .update(videos)
+          .set({
+            videoStatus: 'uploaded',
+            videoUrl: videoUrl,
+          })
+          .where(eq(videos.id, videoId))
+          .returning();
+
+        return {
+          videoId: video.id,
+          url: videoUrl,
+        };
+      } catch (error) {
+        console.log("uploading error: ", error)
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'An error occurred while finalizing the video upload',
+        });
+      }
+    }),
 
   update: protectedProcedure.input(VideoUpdateSchema).mutation(async ({ ctx, input }) => {
     const { id: userId } = ctx.user;
@@ -107,6 +159,30 @@ export const videosRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id: userId } = ctx.user;
 
+      const [videoToRemove] = await db
+        .select()
+        .from(videos)
+        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+      if (!videoToRemove) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Video not found',
+        });
+      }
+
+      try {
+        if (videoToRemove.videoUploadId) {
+          await videoUtils.deleteVideo(videoToRemove.videoUploadId);
+        }
+        if (videoToRemove.thumbnailKey) {
+          const utapi = new UTApi();
+          await utapi.deleteFiles(videoToRemove.thumbnailKey);
+        }
+      } catch (error) {
+        console.error('Error deleting video from S3:', error);
+      }
+
       const [removedVideo] = await db
         .delete(videos)
         .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
@@ -120,123 +196,6 @@ export const videosRouter = createTRPCRouter({
       }
 
       return removedVideo;
-    }),
-
-  revalidate: protectedProcedure
-    .input(z.object({ id: z.string().uuid() }))
-    .mutation(async ({ ctx, input }) => {
-      const { id: userId } = ctx.user;
-
-      const [existingVideo] = await db
-        .select()
-        .from(videos)
-        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
-
-      if (!existingVideo) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Video not found',
-        });
-      }
-
-      if (!existingVideo.videoUploadId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Video upload ID not found',
-        });
-      }
-
-      const directUpload = await mux.video.uploads.retrieve(existingVideo.videoUploadId);
-
-      if (!directUpload || !directUpload.asset_id) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Direct upload not found',
-        });
-      }
-
-      const asset = await mux.video.assets.retrieve(directUpload.asset_id);
-
-      if (!asset || !asset.status) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Asset not found',
-        });
-      }
-
-      const playbackId = asset.playback_ids?.[0]?.id;
-      const duration = asset.duration ? Math.round(asset.duration * 1000) : 0;
-
-      const [updatedVideo] = await db
-        .update(videos)
-        .set({
-          videoAssetId: asset.id,
-          videoStatus: asset.status,
-          videoPlaybackId: playbackId,
-          duration: duration,
-        })
-        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
-        .returning();
-
-      return updatedVideo;
-    }),
-
-  restoreThumbnail: protectedProcedure
-    .input(z.object({ id: z.string().uuid() }))
-    .mutation(async ({ ctx, input }) => {
-      const { id: userId } = ctx.user;
-
-      const [existingVideo] = await db
-        .select()
-        .from(videos)
-        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
-
-      if (!existingVideo) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Video not found',
-        });
-      }
-
-      if (existingVideo.thumbnailKey) {
-        const utapi = new UTApi();
-        await utapi.deleteFiles(existingVideo.thumbnailKey);
-
-        await db
-          .update(videos)
-          .set({ thumbnailKey: null, thumbnailUrl: null })
-          .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
-          .returning();
-      }
-
-      if (!existingVideo.videoPlaybackId) {
-        throw new TRPCError({
-          code: 'BAD_REQUEST',
-          message: 'Video not found',
-        });
-      }
-
-      const tempThumbnailUrl = `https://image.mux.com/${existingVideo.videoPlaybackId}/thumbnail.jpg`;
-      const utapi = new UTApi();
-      const [uploadedThumbnail] = await utapi.uploadFilesFromUrl([tempThumbnailUrl]);
-
-      if (!uploadedThumbnail.data) {
-        throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to upload thumbnail',
-        });
-      }
-
-      const [updatedVideo] = await db
-        .update(videos)
-        .set({
-          thumbnailUrl: uploadedThumbnail.data.ufsUrl,
-          thumbnailKey: uploadedThumbnail.data.key,
-        })
-        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
-        .returning();
-
-      return updatedVideo;
     }),
 
   generateThumbnail: protectedProcedure
