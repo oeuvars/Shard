@@ -18,17 +18,22 @@ export const commentsRouter = createTRPCRouter({
          const { id: userId} = ctx.user;
          const { parentId, videoId, content } = input;
 
-         const [existingComment] = await db
-            .select()
-            .from(comments)
-            .where(inArray(comments.id, parentId ? [parentId] : []))
+         let existingComment = null;
+         if (parentId) {
+            const result = await db
+               .select()
+               .from(comments)
+               .where(inArray(comments.id, [parentId]));
 
-         if (!existingComment && parentId) {
-            throw new TRPCError({ code: "NOT_FOUND", message: "This comment does not exist" })
-         }
+            existingComment = result[0];
 
-         if (existingComment.parentId && parentId) {
-            throw new TRPCError({ code: "BAD_REQUEST", message: "Method not allowed" })
+            if (!existingComment) {
+               throw new TRPCError({ code: "NOT_FOUND", message: "This comment does not exist" });
+            }
+
+            if (existingComment.parentId) {
+               throw new TRPCError({ code: "BAD_REQUEST", message: "Method not allowed" });
+            }
          }
 
          const [createdComment] = await db

@@ -83,19 +83,16 @@ export const userRelation = relations(user, ({ many }) => ({
   commentReactions: many(commentReaction),
 }));
 
-export const subscription = pgTable(
-  'subscriptions',
-  {
-    viewerId: uuid('viewer_id')
-      .references(() => user.id, { onDelete: 'cascade' })
-      .notNull(),
-    creatorId: uuid('creator_id')
-      .references(() => user.id, { onDelete: 'cascade' })
-      .notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  },
-  t => [
+export const subscription = pgTable('subscriptions', {
+  viewerId: uuid('viewer_id')
+    .references(() => user.id, { onDelete: 'cascade' })
+    .notNull(),
+  creatorId: uuid('creator_id')
+    .references(() => user.id, { onDelete: 'cascade' })
+    .notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, t => [
     primaryKey({
       name: 'subscription_pkey',
       columns: [t.viewerId, t.creatorId],

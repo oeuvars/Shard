@@ -1,4 +1,3 @@
-import { s3Client } from '@/config/s3-init';
 import { DEFAULT_LIMIT } from '@/constants';
 import { db } from '@/db/drizzle';
 import {
@@ -12,7 +11,7 @@ import {
 import { workflow } from '@/lib/workflow';
 import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { TRPCError } from '@trpc/server';
-import { and, desc, eq, getTableColumns, inArray, isNotNull, lt, or } from 'drizzle-orm';
+import { and, desc, eq, exists, getTableColumns, inArray, isNotNull, lt, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { videoUtils } from './utils';
 import { UTApi } from 'uploadthing/server';
@@ -114,7 +113,6 @@ export const videosRouter = createTRPCRouter({
           url: videoUrl,
         };
       } catch (error) {
-        console.log("uploading error: ", error)
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'An error occurred while finalizing the video upload',
@@ -154,49 +152,47 @@ export const videosRouter = createTRPCRouter({
     return updatedVideo;
   }),
 
-  remove: protectedProcedure
-    .input(z.object({ id: z.string().uuid() }))
-    .mutation(async ({ ctx, input }) => {
-      const { id: userId } = ctx.user;
+  remove: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+    const { id: userId } = ctx.user;
 
-      const [videoToRemove] = await db
-        .select()
-        .from(videos)
-        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+    const [videoToRemove] = await db
+      .select()
+      .from(videos)
+      .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
 
-      if (!videoToRemove) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Video not found',
-        });
+    if (!videoToRemove) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Video not found',
+      });
+    }
+
+    try {
+      if (videoToRemove.videoUploadId) {
+        await videoUtils.deleteVideo(videoToRemove.videoUploadId);
       }
-
-      try {
-        if (videoToRemove.videoUploadId) {
-          await videoUtils.deleteVideo(videoToRemove.videoUploadId);
-        }
-        if (videoToRemove.thumbnailKey) {
-          const utapi = new UTApi();
-          await utapi.deleteFiles(videoToRemove.thumbnailKey);
-        }
-      } catch (error) {
-        console.error('Error deleting video from S3:', error);
+      if (videoToRemove.thumbnailKey) {
+        const utapi = new UTApi();
+        await utapi.deleteFiles(videoToRemove.thumbnailKey);
       }
+    } catch (error) {
+      console.error('Error deleting video from S3:', error);
+    }
 
-      const [removedVideo] = await db
-        .delete(videos)
-        .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
-        .returning();
+    const [removedVideo] = await db
+      .delete(videos)
+      .where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+      .returning();
 
-      if (!removedVideo) {
-        throw new TRPCError({
-          code: 'NOT_FOUND',
-          message: 'Video not found',
-        });
-      }
+    if (!removedVideo) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Video not found',
+      });
+    }
 
-      return removedVideo;
-    }),
+    return removedVideo;
+  }),
 
   generateThumbnail: protectedProcedure
     .input(z.object({ id: z.string().uuid(), prompt: z.string() }))
@@ -398,6 +394,89 @@ export const videosRouter = createTRPCRouter({
         ? {
             id: lastItem.id,
             viewCount: lastItem.viewCount,
+          }
+        : null;
+
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+
+  getManySubscribed: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number().min(1).max(100).default(DEFAULT_LIMIT),
+        cursor: z
+          .object({
+            id: z.string().uuid(),
+            updatedAt: z.date(),
+          })
+          .nullish(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const { limit, cursor } = input;
+      const { id: userId } = ctx.user;
+
+      const viewerSubscriptions = db.$with('viewer_subscriptions').as(
+        db
+          .select({
+            userId: subscriptions.creatorId,
+          })
+          .from(subscriptions)
+          .where(eq(subscriptions.viewerId, userId)),
+      );
+
+      const data = await db
+        .select({
+          ...getTableColumns(videos),
+          user: users,
+          viewCount: db.$count(videoViews, eq(videoViews.videoId, videos.id)),
+          likeCount: db.$count(
+            videoReactions,
+            and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, 'like')),
+          ),
+          dislikeCount: db.$count(
+            videoReactions,
+            and(eq(videoReactions.videoId, videos.id), eq(videoReactions.type, 'dislike')),
+          ),
+        })
+        .from(videos)
+        .innerJoin(users, eq(videos.userId, users.id))
+        .where(
+          and(
+            eq(videos.visibility, 'public'),
+            exists(
+              db
+                .select({ dummy: sql`1` })
+                .from(subscriptions)
+                .where(
+                  and(
+                    eq(subscriptions.viewerId, userId),
+                    eq(subscriptions.creatorId, videos.userId)
+                  )
+                )
+            ),
+            cursor
+              ? or(
+                  lt(videos.updatedAt, cursor.updatedAt),
+                  and(eq(videos.updatedAt, cursor.updatedAt), lt(videos.id, cursor.id)),
+                )
+              : undefined,
+          ),
+        )
+        .orderBy(desc(videos.updatedAt), desc(videos.id))
+        .limit(limit + 1);
+
+      const hasMore = data.length > limit;
+
+      const items = hasMore ? data.slice(0, -1) : data;
+      const lastItem = items[items.length - 1];
+      const nextCursor = hasMore
+        ? {
+            id: lastItem.id,
+            updatedAt: lastItem.updatedAt,
           }
         : null;
 

@@ -9,6 +9,7 @@ import { videoReactionsRouter } from '@/modules/video-reactions/procedures';
 import { videoViewsRouter } from '@/modules/video-views/procedures';
 import { videosRouter } from '@/modules/videos/server/procedures';
 import { createTRPCRouter } from '../init';
+import { playlistsRouter } from '@/modules/playlists/server/procedures';
 
 export const appRouter = createTRPCRouter({
   categories: categoriesRouter,
@@ -21,6 +22,7 @@ export const appRouter = createTRPCRouter({
   commentReactions: commentReactionsRouter,
   suggestions: suggestionsRouter,
   search: searchRouter,
+  playlists: playlistsRouter
 });
 
 export type AppRouter = typeof appRouter;

@@ -5,6 +5,7 @@ import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, Side
 import { authClient } from "@/lib/auth-client";
 import { HeartIcon, HistoryIcon, ListVideoIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const items = [
    { title: "History", href: "/playlists/history", icon: HistoryIcon, auth: true },
@@ -17,31 +18,36 @@ export const PersonalSection = () => {
    const isInSession = !!session.data?.session;
 
    const { openAuthModal } = useAuthModal();
+   const pathName = usePathname()
 
    return (
       <SidebarGroup>
          <SidebarGroupLabel>You</SidebarGroupLabel>
          <SidebarGroupContent>
             <SidebarMenu>
-               {items.map((item, index) => (
-                  <SidebarMenuButton
-                     tooltip={item.title}
-                     asChild
-                     isActive={false}
-                     onClick={(e) => {
-                        if (!isInSession && item.auth) {
+               {items.map((item, index) => {
+                  const isActive = pathName === item.href;
+                  return (
+                     <SidebarMenuButton
+                       tooltip={item.title}
+                       asChild
+                       isActive={isActive}
+                       onClick={e => {
+                         if (!isInSession && item.auth) {
                            e.preventDefault();
-                           return openAuthModal()
-                        }
-                     }}
-                     key={index}
-                  >
-                     <Link href={item.href}>
-                        <item.icon className="size-5" />
-                        <span>{item.title}</span>
-                     </Link>
-                  </SidebarMenuButton>
-               ))}
+                           return openAuthModal();
+                         }
+                       }}
+                       key={index}
+                       className={isActive ? "!bg-neutral-200 !text-neutral-800 dark:!bg-neutral-700 dark:!text-neutral-100 font-medium" : ""}
+                     >
+                       <Link href={item.href}>
+                         <item.icon className="size-5" />
+                         <span>{item.title}</span>
+                       </Link>
+                     </SidebarMenuButton>
+                   );
+               })}
             </SidebarMenu>
          </SidebarGroupContent>
       </SidebarGroup>

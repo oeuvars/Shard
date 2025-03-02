@@ -47,6 +47,8 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
     return Intl.NumberFormat('en-US', { notation: 'compact' }).format(data.likeCount);
   }, [data.likeCount]);
 
+  console.log("rendered data", data)
+
   return (
     <div className={videoRowCardVariants({ size })}>
       <Link href={`/videos/${data.id}`} className={thumbnailVariants({ size })}>
@@ -75,16 +77,9 @@ export const VideoRowCard = ({ data, size, onRemove }: VideoRowCardProps) => {
                   <UserAvatar className="size-5" imageUrl={data.user.image} name={data.user.name} />
                   <UserInfo size="sm" name={data.user.name} />
                 </div>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-xs text-neutral-500 w-fit line-clamp-2">
-                      {data.description ?? 'No description'}
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="bg-black/70 backdrop-blur-lg">
-                    {data.description ?? 'No description'}
-                  </TooltipContent>
-                </Tooltip>
+                <p className="text-sm text-neutral-600 w-fit line-clamp-2">
+                  {data.description ?? 'No description'}
+                </p>
               </>
             )}
             {size === 'compact' && <UserInfo size="sm" name={data.user.name} />}

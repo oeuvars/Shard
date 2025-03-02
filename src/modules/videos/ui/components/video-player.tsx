@@ -14,11 +14,12 @@ export const VideoPlayerSkeleton = () => {
   return <div className="aspect-video bg-black rounded-xl " />;
 };
 
-const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay = false }: Props) => {
+const VideoPlayer = ({ playbackId, thumbnailUrl, autoPlay = false, onPlay }: Props) => {
   return (
     <Player
       src={playbackId || ''}
       autoPlay={autoPlay}
+      onPlay={onPlay}
       poster={thumbnailUrl || '/images/placeholder.svg'}
       className='overflow-hidden'
     />

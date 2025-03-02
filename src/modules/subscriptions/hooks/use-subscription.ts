@@ -22,6 +22,7 @@ export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) =>
             message: "Subscribed",
             type: "success"
          })
+         utils.videos.getManySubscribed.invalidate();
          if (fromVideoId) {
             utils.videos.getOne.invalidate({ id: fromVideoId });
          }
@@ -47,6 +48,7 @@ export const useSubscription = ({ userId, isSubscribed, fromVideoId }: Props) =>
             message: "UnSubscribed",
             type: "success"
          })
+         utils.videos.getManySubscribed.invalidate();
          if (fromVideoId) {
             utils.videos.getOne.invalidate({ id: fromVideoId });
          }

@@ -41,6 +41,9 @@ export const UserButton = ({ name, image, isInSession }: Props) => {
         fetchOptions: {
           onSuccess: () => {
             router.push('/');
+            setTimeout(() => {
+              router.refresh();
+            }, 100);
           },
         },
       });

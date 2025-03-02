@@ -20,6 +20,7 @@ type Props = {
 }
 
 const CommentItem = ({ comment, variant = "comment" }: Props) => {
+
    const session = authClient.useSession();
    const user = session.data?.user;
 

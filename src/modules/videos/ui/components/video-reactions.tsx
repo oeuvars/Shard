@@ -27,6 +27,7 @@ const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => 
    const like = trpc.videoReactions.like.useMutation({
       onSuccess: () => {
          utils.videos.getOne.invalidate({ id: videoId });
+         utils.playlists.getLiked.invalidate()
       },
       onError: (error) => {
          showToast({
@@ -42,6 +43,7 @@ const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => 
    const dislike = trpc.videoReactions.dislike.useMutation({
       onSuccess: () => {
          utils.videos.getOne.invalidate({ id: videoId });
+         utils.playlists.getLiked.invalidate()
       },
       onError: (error) => {
          showToast({

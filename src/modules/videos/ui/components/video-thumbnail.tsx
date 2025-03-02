@@ -16,7 +16,7 @@ const VideoThumbnail = ({ title, imageUrl, duration }: Props) => {
           src={imageUrl ?? '/images/placeholder.svg'}
           alt={title}
           fill
-          className="object-cover size-full group-hover:opacity-0"
+          className="object-cover size-full"
         />
       </div>
 

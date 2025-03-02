@@ -74,25 +74,14 @@ const AuthModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
 
             <Card className="lg:w-[30rem] backdrop-blur-lg p-2 overflow-hidden bg-white rounded-lg">
               <CardHeader>
-                <motion.div
-                  className="flex gap-3 mb-4 mx-auto"
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                >
+                <div className="flex gap-3 mb-4 mx-auto">
                   <Image src="/icons/tkiara.svg" alt="tkiara" width={30} height={30} />
                   <h1 className="text-xl font-bold text-zinc-800 my-auto tracking-tight">tkiara</h1>
-                </motion.div>
-                <motion.div
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <CardTitle className="text-base md:text-lg">Sign In ✨</CardTitle>
-                  <CardDescription className="text-xs md:text-sm font-medium text-neutral-500">
-                    Please select one of these OAuth to get started
-                  </CardDescription>
-                </motion.div>
+                </div>
+                <CardTitle className="text-base md:text-lg">Sign In ✨</CardTitle>
+                <CardDescription className="text-xs md:text-sm font-medium text-neutral-500">
+                  Please select one of these OAuth to get started
+                </CardDescription>
               </CardHeader>
               <Separator />
               <CardContent className="pt-7">
