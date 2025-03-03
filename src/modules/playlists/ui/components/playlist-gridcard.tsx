@@ -24,12 +24,12 @@ export const PlaylistGridCard = ({ data }: Props) => {
             <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-[98.5%] overflow-hidden rounded-xl bg-black/25 aspect-video" />
             <div className="relative overflow-hidden w-ful;l rounded-xl aspect-video">
               <Image
-                src="/images/placeholder.svg"
+                src={ data.thumbnailUrl || "/images/placeholder.svg"}
                 alt={data.name}
                 className="size-full object-cover"
                 fill
               />
-              <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/70 animate opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <div className="flex items-center gap-x-2">
                   <IconPlayerPlayFilled className="text-white fill-white size-5" />
                   <span className="text-white font-medium tracking-tight">Play all</span>

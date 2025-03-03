@@ -5,6 +5,7 @@ import { ReactNode } from "react";
 import { TRPCProvider } from "@/trpc/client";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthModalProvider } from "./(auth)/sign-in/providers/auth-modal-provider";
+import { IconAlertSquareRounded, IconBug, IconChecks, IconInfoSquareRounded, IconLoader } from "@tabler/icons-react";
 
 const figtree = Figtree({
   subsets: ["latin"],
@@ -26,7 +27,15 @@ const Layout = ({children}: Props) => {
       <body className={`${figtree.className} antialiased tracking-tight font-normal`}>
         <TRPCProvider>
           <AuthModalProvider>
-            <Toaster />
+            <Toaster
+              icons={{
+                success: <IconChecks />,
+                info: <IconInfoSquareRounded />,
+                warning: <IconAlertSquareRounded />,
+                error: <IconBug />,
+                loading: <IconLoader />,
+              }}
+            />
             {children}
           </AuthModalProvider>
         </TRPCProvider>

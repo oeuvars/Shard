@@ -1,20 +1,17 @@
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
-interface InfiniteScrollProps {
+type Props = {
    isManual?: boolean;
    hasNextPage: boolean;
    isFetchingNextPage: boolean;
+   endMessage?: boolean;
    fetchNextPage: () => void;
 }
 
-export const InfiniteScroll = ({
-   isManual = false,
-   hasNextPage,
-   isFetchingNextPage,
-   fetchNextPage,
-}: InfiniteScrollProps) => {
+export const InfiniteScroll = ({ isManual = false, hasNextPage, isFetchingNextPage, fetchNextPage, endMessage }: Props) => {
    const [isIntersecting, elementRef] = useIntersectionObserver({
       threshold: 1,
       rootMargin: "100px"
@@ -27,14 +24,18 @@ export const InfiniteScroll = ({
    }, [isIntersecting, isFetchingNextPage, isManual, hasNextPage]);
 
    return (
-      <div className="flex flex-col items-center gap-4 p-4">
+      <div className={cn("flex flex-col items-center gap-4 p-4", endMessage, "p-0")}>
          <div ref={elementRef} className="h-1"></div>
          {hasNextPage ? (
             <Button variant="secondary" onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
                {isFetchingNextPage ? "Loading..." : "Load More"}
             </Button>
          ) : (
-            <p className="font-medium text-sm text-zinc-500">You have reached the end of the list.</p>
+            <>
+               {endMessage && (
+                  <p className="font-medium text-sm text-zinc-500">You have reached the end of the list.</p>
+               )}
+            </>
          )}
       </div>
    )

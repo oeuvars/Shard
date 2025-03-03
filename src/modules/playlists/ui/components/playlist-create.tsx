@@ -19,7 +19,7 @@ const formSchema = z.object({
    description: z.string().min(1)
 })
 
-const PlaylistUpload = ({ open, onOpenChange }: Props) => {
+export const PlaylistCreate = ({ open, onOpenChange }: Props) => {
 
    const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -110,5 +110,3 @@ const PlaylistUpload = ({ open, onOpenChange }: Props) => {
       </ResponsiveModal>
    )
 }
-
-export default PlaylistUpload;
