@@ -27,13 +27,15 @@ export const PlaylistAdd = ({ open, onOpenChange, videoId }: Props) => {
    })
 
    const addVideo = trpc.playlists.addVideo.useMutation({
-      onSuccess: () => {
+      onSuccess: (data) => {
          showToast({
             message: `Video added to playlist`,
             type: "success"
          })
          utils.playlists.getMany.invalidate();
          utils.playlists.getManyForVideo.invalidate({ videoId })
+         utils.playlists.getOne.invalidate({ id: data.playlistId })
+         utils.playlists.getVideos.invalidate({ playlistId: data.playlistId })
       },
       onError: (error) => {
          showToast({
@@ -44,13 +46,15 @@ export const PlaylistAdd = ({ open, onOpenChange, videoId }: Props) => {
    })
 
    const removeVideo = trpc.playlists.removeVideo.useMutation({
-      onSuccess: () => {
+      onSuccess: (data) => {
          showToast({
             message: `Video removed from playlist`,
             type: "success"
          })
          utils.playlists.getMany.invalidate();
          utils.playlists.getManyForVideo.invalidate({ videoId })
+         utils.playlists.getOne.invalidate({ id: data.playlistId })
+         utils.playlists.getVideos.invalidate({ playlistId: data.playlistId })
       },
       onError: (error) => {
          showToast({

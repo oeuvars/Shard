@@ -7,7 +7,9 @@ type Props = {};
 export const dynamic = 'force-dynamic';
 
 const Page = async (props: Props) => {
+
   void trpc.playlists.getHistory.prefetchInfinite({ limit: DEFAULT_LIMIT });
+
   return (
    <HydrateClient>
       <HistoryView />

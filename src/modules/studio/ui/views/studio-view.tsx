@@ -1,4 +1,4 @@
-import VideoSection from '../sections/videos-section';
+import VideoSection from '../sections/video-section';
 
 type Props = {};
 
