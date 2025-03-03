@@ -6,10 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import { trpc } from '@/trpc/client';
-import { IconUpload } from '@tabler/icons-react';
-import { AlertCircle, CheckCircle, Loader2, PlusIcon, Upload } from 'lucide-react';
+import { IconCheck, IconAlertCircle, IconLoader, IconPlus, IconCloudUp } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const StudioUpload = () => {
   const { showToast } = useToast();
@@ -20,8 +19,8 @@ const StudioUpload = () => {
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'pending' | 'success' | 'error'>(
     'idle',
   );
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const createSignedUrl = trpc.videos.createSignedUrl.useMutation({
     onError: error => {
@@ -44,8 +43,12 @@ const StudioUpload = () => {
       utils.studio.getMany.invalidate();
       if (data?.videoId) {
         setTimeout(() => {
-          router.push(`/studio/videos/${data.videoId}`);
-        }, 1500);
+          setIsModalOpen(false);
+          setUploadStatus("idle")
+          setTimeout(() => {
+            router.push(`/studio/videos/${data.videoId}`);
+          }, 100);
+        }, 100);
       }
     },
     onError: error => {
@@ -118,7 +121,7 @@ const StudioUpload = () => {
 
       xhr.open('PUT', signedUrl);
       xhr.setRequestHeader('Content-Type', file.type);
-      xhr.timeout = 60000; // 60 seconds timeout
+      xhr.timeout = 60000;
       xhr.send(file);
     } catch (error) {
       setUploadStatus('error');
@@ -145,7 +148,7 @@ const StudioUpload = () => {
             htmlFor="file-upload"
             className="flex flex-col items-center justify-center w-full h-32 p-6 border-2 border-dashed border-neutral-200 rounded-xl cursor-pointer hover:border-neutral-300 transition-colors"
           >
-            <IconUpload className="w-10 h-10 mb-2 text-neutral-800" />
+            <IconCloudUp className="w-10 h-10 mb-2 text-neutral-600" />
             <p className="text-sm text-gray-500">Click or drag to upload a video</p>
             <input
               id="file-upload"
@@ -179,7 +182,7 @@ const StudioUpload = () => {
     if (uploadStatus === 'pending') {
       return (
         <div className="flex flex-col items-center space-y-4 p-6">
-          <Loader2 className="animate-spin w-10 h-10 text-primary" />
+          <IconLoader className="animate-spin w-10 h-10 text-neutral-600" />
           <p className="font-medium">Uploading your video...</p>
           <div className="w-full max-w-md">
             <Progress value={uploadProgress} className="h-2" />
@@ -195,12 +198,9 @@ const StudioUpload = () => {
     if (uploadStatus === 'success') {
       return (
         <div className="flex flex-col items-center space-y-4 p-6">
-          <CheckCircle className="text-green-500 w-10 h-10" />
+          <IconCheck className="text-neutral-600 w-10 h-10" />
           <p className="font-medium">Upload successful!</p>
-          <p className="text-sm text-gray-500">Redirecting to your video page...</p>
-          <Button variant="outline" onClick={resetUpload}>
-            Upload another video
-          </Button>
+          <p className="text-sm text-gray-500">Redirecting to your video studio...</p>
         </div>
       );
     }
@@ -208,7 +208,7 @@ const StudioUpload = () => {
     if (uploadStatus === 'error') {
       return (
         <div className="flex flex-col items-center space-y-4 p-6">
-          <AlertCircle className="text-red-500 w-10 h-10" />
+          <IconAlertCircle className="text-neutral-700 w-10 h-10" />
           <p className="font-medium">Upload failed</p>
           <p className="text-sm text-gray-500">
             There was a problem uploading your video. Please try again.
@@ -250,11 +250,11 @@ const StudioUpload = () => {
         className="flex items-center gap-2"
       >
         {createSignedUrl.isPending || finalizeUpload.isPending ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <IconLoader className="h-4 w-4 animate-spin" />
         ) : (
-          <PlusIcon className="h-4 w-4" />
+          <IconPlus className="h-4 w-4" />
         )}
-        Upload Video
+        Upload
       </Button>
     </section>
   );

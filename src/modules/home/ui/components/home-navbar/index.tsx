@@ -21,7 +21,7 @@ export const HomeNavbar = async () => {
             <div className="flex items-center flex-shrink-0 gap-4">
                <SidebarTrigger />
                <Link href="/" className='-ml-3'>
-                  <Image src="/logos/tkiara.svg" alt="Youtube Logo" width={45} height={45} />
+                  <Image src="/logos/tkiara.svg" alt="Youtube Logo" width={35} height={35} />
                </Link>
             </div>
 

@@ -72,18 +72,18 @@ const AuthModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
           >
 
-            <Card className="lg:w-[30rem] backdrop-blur-lg p-2 overflow-hidden bg-white rounded-lg">
+            <Card className="lg:w-[30rem] p-2 overflow-hidden bg-white/90 backdrop-blur-xl rounded-lg">
               <CardHeader>
                 <div className="flex gap-3 mb-4 mx-auto">
                   <Image src="/icons/tkiara.svg" alt="tkiara" width={30} height={30} />
-                  <h1 className="text-xl font-bold text-zinc-800 my-auto tracking-tight">tkiara</h1>
+                  <h1 className="text-3xl font-bold text-zinc-700 my-auto tracking-tight">tkiara</h1>
                 </div>
                 <CardTitle className="text-base md:text-lg">Sign In ✨</CardTitle>
                 <CardDescription className="text-xs md:text-sm font-medium text-neutral-500">
-                  Please select one of these OAuth to get started
+                  Please select one to get started
                 </CardDescription>
               </CardHeader>
-              <Separator />
+              <Separator className='bg-zinc-300 px-5'/>
               <CardContent className="pt-7">
                 <div className={cn('w-full gap-2 flex items-center', 'justify-between flex-col')}>
                   <Button
