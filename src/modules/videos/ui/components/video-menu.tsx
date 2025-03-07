@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/dropdown';
 import { useToast } from '@/hooks/use-toast';
 import { PlaylistAdd } from '@/modules/playlists/ui/components/playlist-add';
-import { ListPlusIcon, MoreVerticalIcon, ShareIcon, Trash2Icon } from 'lucide-react';
+import { IconCircleMinus, IconDotsVertical, IconShare, IconTextPlus } from '@tabler/icons-react';
 import { useState } from 'react';
 
 type Props = {
@@ -39,7 +39,7 @@ const VideoMenu = ({ videoId, variant = 'ghost', onRemove }: Props) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant={variant} size="icon" className="rounded-full">
-            <MoreVerticalIcon />
+            <IconDotsVertical />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -51,14 +51,14 @@ const VideoMenu = ({ videoId, variant = 'ghost', onRemove }: Props) => {
             onClick={onShare}
             className="font-semibold text-neutral-600 tracking-tight"
           >
-            <ShareIcon className="mr-2.5 size-4" />
+            <IconShare className="mr-2.5 size-4" />
             Share
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setOpenPlaylistAddModal(true)}
             className="font-semibold text-neutral-600 tracking-tight"
           >
-            <ListPlusIcon className="mr-2.5 size-4" />
+            <IconTextPlus className="mr-2.5 size-4" />
             Add to playlist
           </DropdownMenuItem>
           {onRemove && (
@@ -66,7 +66,7 @@ const VideoMenu = ({ videoId, variant = 'ghost', onRemove }: Props) => {
               onClick={onRemove}
               className="font-semibold text-neutral-600 tracking-tight"
             >
-              <Trash2Icon className="mr-1 size-4" />
+              <IconCircleMinus className="mr-1 size-4" />
               Remove
             </DropdownMenuItem>
           )}

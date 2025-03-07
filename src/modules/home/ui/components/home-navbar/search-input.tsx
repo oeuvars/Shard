@@ -1,7 +1,6 @@
 'use client';
 
-import { IconX } from '@tabler/icons-react';
-import { SearchIcon } from 'lucide-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FormEvent, useState } from 'react';
 
@@ -57,7 +56,7 @@ export const SearchInput = (props: Props) => {
         type="submit"
         className="px-5 py-2.5 bg-gray-100 border-l-0 rounded-r-full hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <SearchIcon className="size-5 my-auto" />
+        <IconSearch className="size-5 my-auto" />
       </button>
     </form>
   );

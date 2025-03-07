@@ -10,10 +10,12 @@ import { videoViewsRouter } from '@/modules/video-views/procedures';
 import { videosRouter } from '@/modules/videos/server/procedures';
 import { createTRPCRouter } from '../init';
 import { playlistsRouter } from '@/modules/playlists/server/procedures';
+import { usersRouter } from '@/modules/users/server/procedures';
 
 export const appRouter = createTRPCRouter({
   categories: categoriesRouter,
   studio: studioRouter,
+  users: usersRouter,
   videos: videosRouter,
   videoViews: videoViewsRouter,
   videoReactions: videoReactionsRouter,

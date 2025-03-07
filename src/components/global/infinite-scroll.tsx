@@ -2,6 +2,7 @@ import { useIntersectionObserver } from "@/hooks/use-intersection-observer";
 import { useEffect } from "react";
 import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { IconLoader } from "@tabler/icons-react";
 
 type Props = {
    isManual?: boolean;
@@ -28,7 +29,11 @@ export const InfiniteScroll = ({ isManual = false, hasNextPage, isFetchingNextPa
          <div ref={elementRef} className="h-1"></div>
          {hasNextPage ? (
             <Button variant="secondary" onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-               {isFetchingNextPage ? "Loading..." : "Load More"}
+               {isFetchingNextPage ? (
+                  <IconLoader className="animate-spin"/>
+               ) : (
+                  <p>Load More</p>
+               )}
             </Button>
          ) : (
             <>

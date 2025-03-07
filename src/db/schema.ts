@@ -23,6 +23,8 @@ export const user = pgTable(
     email: text('email').notNull().unique(),
     emailVerified: boolean('email_verified').notNull(),
     image: text('image_url').notNull(),
+    bannerUrl: text("banner_url"),
+    bannerKey: text("banner_key"),
     createdAt: timestamp('created_at').notNull(),
     updatedAt: timestamp('updated_at').notNull(),
   },

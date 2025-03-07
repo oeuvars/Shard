@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useState } from 'react'
 
 type Props = {
@@ -30,7 +30,7 @@ const VideoDescription = ({ compactDate, expandedViews, compactViews, expandedDa
                {description || "No description"}
             </p>
             <div className='flex items-center gap-1 mt-4 text-sm font-medium'>
-               {isExpanded ? <>Show less <ChevronUp className='size-4'/></> : <>Show More <ChevronDown className='size-4'/></>}
+               {isExpanded ? <>Show less <IconChevronUp className='size-4'/></> : <>Show More <IconChevronDown className='size-4'/></>}
             </div>
          </div>
       </div>

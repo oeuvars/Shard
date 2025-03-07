@@ -3,14 +3,14 @@
 import { useAuthModal } from "@/app/(auth)/sign-in/hooks/use-auth-modal";
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton } from "@/components/ui/sidebar";
 import { authClient } from "@/lib/auth-client";
-import { HeartIcon, HistoryIcon, ListVideoIcon } from "lucide-react";
+import { IconHeart, IconHistory, IconList } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const items = [
-   { title: "History", href: "/playlists/history", icon: HistoryIcon, auth: true },
-   { title: "Liked Videos", href: "/playlists/liked", icon: HeartIcon, auth: true },
-   { title: "Playlist", href: "/playlists", icon: ListVideoIcon },
+   { title: "History", href: "/playlists/history", icon: IconHistory, auth: true },
+   { title: "Liked Videos", href: "/playlists/liked", icon: IconHeart, auth: true },
+   { title: "Playlist", href: "/playlists", icon: IconList },
 ]
 
 export const PersonalSection = () => {

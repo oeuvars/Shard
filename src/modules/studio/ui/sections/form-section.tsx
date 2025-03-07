@@ -26,16 +26,6 @@ import VideoPlayer from '@/modules/videos/ui/components/video-player';
 import { trpc } from '@/trpc/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
-import {
-  CheckIcon,
-  CopyIcon,
-  GlobeIcon,
-  ImagePlus,
-  LockIcon,
-  MoreVertical,
-  SparklesIcon,
-  TrashIcon,
-} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -45,7 +35,7 @@ import { z } from 'zod';
 import ThumbnailGenerate from '../components/global/thumbnail-generate';
 import ThumbnailUpload from '../components/global/thumbnail-upload';
 import { FormSectionSkeleton } from '../skeletons/form-skeleton';
-import { IconLoader } from '@tabler/icons-react';
+import { IconCheck, IconCopy, IconDots, IconLoader, IconLock, IconPhotoPlus, IconPhotoSpark, IconTrash, IconWorld } from '@tabler/icons-react';
 
 type Props = {
   videoId: string;
@@ -161,7 +151,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
-                    <MoreVertical />
+                    <IconDots />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
@@ -172,7 +162,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                     className="font-semibold text-neutral-600"
                     onClick={() => remove.mutate({ id: video.id })}
                   >
-                    <TrashIcon className="size-4 mr-2" />
+                    <IconTrash className="size-4 mr-2" />
                     Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -234,16 +224,16 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                               className="bg-black/50 hover:bg-black/50 backdrop-blur-md animate absolute top-2 right-2 rounded-full opacity-100 md:opacity-0 group-hover:opacity-100 size-7"
                               size="icon"
                             >
-                              <MoreVertical className="text-white" />
+                              <IconDots className="text-white" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="start" side="right" className="ml-2">
                             <DropdownMenuItem onClick={() => setThumbnailModalOpen(true)}>
-                              <ImagePlus className="size-4 mr-1" />
+                              <IconPhotoPlus className="size-4 mr-1" />
                               Change
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => setThumbnailGenerateOpen(true)}>
-                              <SparklesIcon className="size-4 mr-1" />
+                              <IconPhotoSpark className="size-4 mr-1" />
                               AI-generated
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -308,9 +298,9 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                           disabled={isCopied}
                         >
                           {isCopied ? (
-                            <CheckIcon className="size-4 mr-2" />
+                            <IconCheck className="size-4 mr-2" />
                           ) : (
-                            <CopyIcon className="size-4 mr-2" />
+                            <IconCopy className="size-4 mr-2" />
                           )}
                         </Button>
                       </div>
@@ -346,7 +336,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                           className="hover:bg-zinc-200 cursor-pointer animate"
                         >
                           <div className="flex items-center gap-x-2">
-                            <GlobeIcon className="size-4 mr-2" />
+                            <IconWorld className="size-4 mr-2" />
                             Public
                           </div>
                         </SelectItem>
@@ -355,7 +345,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                           className="hover:bg-zinc-200 cursor-pointer animate"
                         >
                           <div className="flex items-center gap-x-2">
-                            <LockIcon className="size-4 mr-2" />
+                            <IconLock className="size-4 mr-2" />
                             Private
                           </div>
                         </SelectItem>

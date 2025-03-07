@@ -1,7 +1,6 @@
 import { db } from '@/db/drizzle';
 import { user as users } from '@/db/schema';
 import { auth } from '@/lib/auth';
-import { ratelimit } from '@/lib/ratelimit';
 import { initTRPC, TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
@@ -41,11 +40,12 @@ export const protectedProcedure = t.procedure.use(async function isAuthed(opts) 
     throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Create an account to get started' });
   }
 
-  const { success } = await ratelimit.limit(ctx.userId);
+  // const { success } = await ratelimit.limit(ctx.userId);
 
-  if (!success) {
-    throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
-  }
+  // if (!success) {
+  //   throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
+  // }
+
   return opts.next({
     ctx: { ...ctx, user },
   });

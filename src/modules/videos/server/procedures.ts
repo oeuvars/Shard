@@ -8,7 +8,6 @@ import {
   VideoUpdateSchema,
   videoView as videoViews,
 } from '@/db/schema';
-import { workflow } from '@/lib/workflow';
 import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, exists, getTableColumns, inArray, isNotNull, lt, or, sql } from 'drizzle-orm';
@@ -193,20 +192,6 @@ export const videosRouter = createTRPCRouter({
 
     return removedVideo;
   }),
-
-  generateThumbnail: protectedProcedure
-    .input(z.object({ id: z.string().uuid(), prompt: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { id: userId } = ctx.user;
-
-      const { workflowRunId } = await workflow.trigger({
-        url: `${process.env.QSTASH_URL}/api/videos/workflows/thumbnail`,
-        body: { userId, videoId: input.id, prompt: input.prompt },
-        retries: 3,
-      });
-
-      return workflowRunId;
-    }),
 
   getOne: baseProcedure.input(z.object({ id: z.string().uuid() })).query(async ({ input, ctx }) => {
     const { userId: sessionUserId } = ctx;

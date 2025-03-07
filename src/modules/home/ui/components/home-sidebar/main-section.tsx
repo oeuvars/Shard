@@ -8,14 +8,14 @@ import {
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
 import { authClient } from '@/lib/auth-client';
-import { FlameIcon, HomeIcon, PlaySquareIcon } from 'lucide-react';
+import { IconDeviceIpadHorizontalShare, IconFlame, IconHome } from '@tabler/icons-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 const items = [
-  { title: 'Home', href: '/', icon: HomeIcon },
-  { title: 'Subscriptions', href: '/feed/subscriptions', icon: PlaySquareIcon, auth: true },
-  { title: 'Trending', href: '/feed/trending', icon: FlameIcon },
+  { title: 'Home', href: '/', icon: IconHome },
+  { title: 'Subscriptions', href: '/feed/subscriptions', icon: IconDeviceIpadHorizontalShare, auth: true },
+  { title: 'Trending', href: '/feed/trending', icon: IconFlame },
 ];
 
 export const MainSection = () => {

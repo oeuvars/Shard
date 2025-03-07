@@ -16,7 +16,7 @@ export const HomeNavbar = async () => {
    const isInSession = !!session?.session;
 
    return (
-      <nav className="fixed top-0 left-0 right-0 bg-white flex items-center px-2 pr-5 z-50">
+      <nav className="fixed top-0 left-0 right-0 bg-white flex items-center px-2 pr-5 z-50 rounded-t-md">
          <div className="flex items-center gap-4 w-full py-3">
             <div className="flex items-center flex-shrink-0 gap-4">
                <SidebarTrigger />

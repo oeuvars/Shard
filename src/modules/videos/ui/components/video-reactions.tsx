@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
-import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import { VideoGetOneOutput } from '../../types';
 import { trpc } from '@/trpc/client';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
 import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';
+import { IconThumbDown, IconThumbUp } from '@tabler/icons-react';
 
 type Props = {
    videoId: string;
@@ -59,12 +59,12 @@ const VideoReactions = ({ videoId, likes, dislikes, viewerReaction }: Props) => 
    return (
       <div className="flex items-center flex-none">
          <Button onClick={() => like.mutate({ id: videoId })} disabled={like.isPending || dislike.isPending} className='rounded-l-full rounded-r-none gap-2 pr-4' variant="secondary">
-            <ThumbsUpIcon className={cn("size-5", viewerReaction === "like" && "text-red-500 fill-red-500")} />
+            <IconThumbUp className={cn("size-5", viewerReaction === "like" && "text-red-500 fill-red-500")} />
             {likes}
          </Button>
          <Separator orientation='vertical' className='h-7' />
          <Button onClick={() => dislike.mutate({ id: videoId })} disabled={like.isPending || dislike.isPending} className='rounded-l-none rounded-r-full gap-2 pl-3' variant="secondary">
-         <ThumbsDownIcon className={cn("size-5", viewerReaction === "dislike" && "text-black fill-black")} />
+         <IconThumbDown className={cn("size-5", viewerReaction === "dislike" && "text-black fill-black")} />
             {dislikes}
          </Button>
       </div>

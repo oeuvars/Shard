@@ -2,21 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-.cl-internal-1dauvpw {
-  display: none !important;
-}
-
-.cl-internal-1hp5nqm {
-  display: none !important;
+body {
+  background-color: white;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .animate {
-  @apply transition-all duration-300 ease-in-out;
-}
-
-.cl-userButtonPopoverCard.cl-popoverBox.cl-userButton-popover {
-  top: 70px !important;
-  left: 1865px !important;
+  transition-property: all;
+  transition-duration: 300ms;
+  transition-timing-function: ease-in-out;
 }
 
 .next-video-alert.next-video-alert-uploading {

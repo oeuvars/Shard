@@ -13,10 +13,10 @@ import { DEFAULT_LIMIT } from '@/constants';
 import { formatDate, snakeToTitle } from '@/lib/utils';
 import VideoThumbnail from '@/modules/videos/ui/components/video-thumbnail';
 import { trpc } from '@/trpc/client';
-import { Globe2Icon, LockIcon } from 'lucide-react';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { VideoSectionSkeleton } from '../skeletons/video-skeleton';
+import { IconLock, IconWorld } from '@tabler/icons-react';
 
 const VideoSection = () => {
   return (
@@ -76,9 +76,9 @@ const VideoSectionSuspense = () => {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {video.visibility === 'public' ? (
-                          <Globe2Icon className="h-4 w-4" />
+                          <IconWorld className="h-4 w-4" />
                         ) : (
-                          <LockIcon className="h-4 w-4" />
+                          <IconLock className="h-4 w-4" />
                         )}
                         {snakeToTitle(video.visibility)}
                       </div>

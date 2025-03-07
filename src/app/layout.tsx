@@ -24,7 +24,7 @@ type Props = {
 const Layout = ({children}: Props) => {
   return (
     <html lang="en">
-      <body className={`${figtree.className} antialiased tracking-tight font-normal`}>
+      <body className={`${figtree.className}`}>
         <TRPCProvider>
           <AuthModalProvider>
             <Toaster

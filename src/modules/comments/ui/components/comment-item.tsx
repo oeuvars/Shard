@@ -5,13 +5,12 @@ import { cn, formatDistanceToNow } from '@/lib/utils';
 import { trpc } from '@/trpc/client';
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown';
 import { Button } from '@/components/ui/button';
-import { MessageSquareIcon, MoreVertical, ThumbsDown, ThumbsUp, Trash2Icon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
 import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';
 import { useState } from 'react';
 import CommentForm from './comment-form';
-import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { IconChevronDown, IconChevronUp, IconDots, IconMessagePlus, IconThumbDown, IconThumbUp, IconTrash } from '@tabler/icons-react';
 import { CommentReplies } from './comment-replies';
 
 type Props = {
@@ -115,13 +114,13 @@ const CommentItem = ({ comment, variant = "comment" }: Props) => {
                   <div className='flex items-center gap-2'>
                      <div>
                         <Button className='size-8 my-auto' disabled={false} variant="ghost" onClick={() => like.mutate({ commentId: comment.id })}>
-                           <ThumbsUp className={cn(comment.viewerReaction === "like" && "fill-black")} />
+                           <IconThumbUp className={cn(comment.viewerReaction === "like" && "fill-black")} />
                         </Button>
                         <span className='text-sm text-zinc-500'>{comment.likeCount}</span>
                      </div>
                      <div>
                         <Button className='size-8' size="icon" disabled={false} variant="ghost" onClick={() => dislike.mutate({ commentId: comment.id })}>
-                           <ThumbsDown className={cn(comment.viewerReaction === "dislike" && "fill-black")} />
+                           <IconThumbDown className={cn(comment.viewerReaction === "dislike" && "fill-black")} />
                         </Button>
                         <span className='text-sm text-zinc-500'>{comment.dislikeCount}</span>
                      </div>
@@ -136,19 +135,19 @@ const CommentItem = ({ comment, variant = "comment" }: Props) => {
             <DropdownMenu modal={false}>
                <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className='size-8'>
-                     <MoreVertical />
+                     <IconDots />
                   </Button>
                </DropdownMenuTrigger>
                <DropdownMenuContent align='end' className='border-none bg-white/90 backdrop-blur-md'>
                   {variant === "comment" && (
                      <DropdownMenuItem onClick={() => setIsReplyOpen(true)}>
-                        <MessageSquareIcon className='size-4' />
+                        <IconMessagePlus className='size-4' />
                         Reply
                      </DropdownMenuItem>
                   )}
                   {comment.user.id === user?.id && (
                      <DropdownMenuItem onClick={() => remove.mutate({ id: comment.id })}>
-                        <Trash2Icon className='size-4' />
+                        <IconTrash className='size-4' />
                         Delete
                      </DropdownMenuItem>
                   )}

@@ -5,7 +5,7 @@ import { DEFAULT_LIMIT } from '@/constants';
 import CommentForm from '@/modules/comments/ui/components/comment-form';
 import CommentItem from '@/modules/comments/ui/components/comment-item';
 import { trpc } from '@/trpc/client';
-import { Loader2 } from 'lucide-react';
+import { IconLoader } from '@tabler/icons-react';
 import { Suspense } from 'react';
 
 type Props = {
@@ -23,7 +23,7 @@ const CommentSection = ({ videoId }: Props) => {
 const CommentSectionSkeleton = () => {
    return (
       <div className='mt-6 flex justify-center items-center'>
-         <Loader2 className='text-zinc-400 size-7 animate-spin'/>
+         <IconLoader className='text-zinc-500 size-7 animate-spin'/>
       </div>
    );
 };
