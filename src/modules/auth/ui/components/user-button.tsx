@@ -77,10 +77,7 @@ export const UserButton = () => {
               )}
             </>
           ) : (
-            <Button
-              className="transition-all duration-300 hover:shadow-md hover:shadow-primary/25 hover:brightness-110"
-              variant="secondary"
-            >
+            <Button className='bg-neutral-200 hover:bg-neutral-200 animate text-zinc-800'>
               Sign in
             </Button>
           )}
