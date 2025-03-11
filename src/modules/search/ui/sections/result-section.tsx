@@ -5,7 +5,7 @@ import { DEFAULT_LIMIT } from '@/constants';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { VideoGridCard } from '@/modules/videos/ui/components/video-gridcard';
 import { VideoRowCard } from '@/modules/videos/ui/components/video-rowcard';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { Suspense } from 'react';
 import { ResultSkeleton } from '../skeletons/result-skeleton';
 

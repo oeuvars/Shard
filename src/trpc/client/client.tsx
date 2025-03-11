@@ -7,7 +7,7 @@ import { createTRPCReact } from '@trpc/react-query';
 import { ReactNode, useState } from 'react';
 import Superjson from 'superjson';
 import { makeQueryClient } from './query-client';
-import type { AppRouter } from './routers/_app';
+import type { AppRouter } from '../routers/_app';
 
 export const trpc = createTRPCReact<AppRouter>();
 
@@ -36,7 +36,6 @@ export function TRPCProvider(props: Readonly<{ children: ReactNode }>) {
         httpBatchLink({
           transformer: Superjson,
           url: getUrl(),
-          // May cause issues
           async headers() {
             const headers = new Headers();
             headers.set('x-trpc-source', 'nextjs-react');

@@ -21,6 +21,7 @@ const Page = () => {
       await signIn.social({
         provider: 'google',
         callbackURL: '/',
+        errorCallbackURL: '/',
       });
     } finally {
       setGoogleLoading(false);

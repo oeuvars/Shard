@@ -5,20 +5,18 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { IconCheck, IconAlertCircle, IconLoader, IconPlus, IconCloudUp } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
-const StudioUpload = () => {
+export const StudioUpload = () => {
   const { showToast } = useToast();
   const router = useRouter();
   const utils = trpc.useUtils();
 
   const [file, setFile] = useState<File | null>(null);
-  const [uploadStatus, setUploadStatus] = useState<'idle' | 'pending' | 'success' | 'error'>(
-    'idle',
-  );
+  const [uploadStatus, setUploadStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -259,5 +257,3 @@ const StudioUpload = () => {
     </section>
   );
 };
-
-export default StudioUpload;

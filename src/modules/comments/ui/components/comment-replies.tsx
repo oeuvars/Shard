@@ -1,5 +1,5 @@
 import { DEFAULT_LIMIT } from '@/constants'
-import { trpc } from '@/trpc/client'
+import { trpc } from '@/trpc/client/client'
 import { IconChevronDownRight, IconLoader } from '@tabler/icons-react'
 import React from 'react'
 import CommentItem from './comment-item'

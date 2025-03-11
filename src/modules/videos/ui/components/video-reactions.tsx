@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { VideoGetOneOutput } from '../../types';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
 import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';

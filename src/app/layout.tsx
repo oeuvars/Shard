@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
-import { TRPCProvider } from "@/trpc/client";
+import { TRPCProvider } from "@/trpc/client/client";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthModalProvider } from "./(auth)/sign-in/providers/auth-modal-provider";
 import { IconAlertSquareRounded, IconBug, IconChecks, IconInfoSquareRounded, IconLoader } from "@tabler/icons-react";

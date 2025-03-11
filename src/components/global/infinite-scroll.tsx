@@ -28,13 +28,15 @@ export const InfiniteScroll = ({ isManual = false, hasNextPage, isFetchingNextPa
       <div className={cn("flex flex-col items-center gap-4 p-4", endMessage, "p-0")}>
          <div ref={elementRef} className="h-1"></div>
          {hasNextPage ? (
-            <Button variant="secondary" onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
-               {isFetchingNextPage ? (
+            <>
+            {isFetchingNextPage ? (
                   <IconLoader className="animate-spin"/>
                ) : (
-                  <p>Load More</p>
+                  <Button variant="secondary" onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+                     Load More
+                  </Button>
                )}
-            </Button>
+            </>
          ) : (
             <>
                {endMessage && (

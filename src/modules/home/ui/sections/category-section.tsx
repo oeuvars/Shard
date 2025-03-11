@@ -1,7 +1,7 @@
 'use client';
 
 import FilterCarousel from '@/components/global/filter-carousel';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 

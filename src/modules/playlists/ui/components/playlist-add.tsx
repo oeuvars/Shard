@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { DEFAULT_LIMIT } from "@/constants";
 import useToast from "@/hooks/use-toast";
-import {  trpc } from "@/trpc/client";
+import {  trpc } from "@/trpc/client/client";
 import { IconLoader, IconSquareRounded, IconSquareRoundedCheckFilled } from "@tabler/icons-react";
 
 type Props = {

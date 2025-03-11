@@ -8,7 +8,7 @@ import {
   VideoUpdateSchema,
   videoView as videoViews,
 } from '@/db/schema';
-import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { TRPCError } from '@trpc/server';
 import { and, desc, eq, exists, getTableColumns, inArray, isNotNull, lt, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
@@ -16,6 +16,8 @@ import { videoUtils } from './utils';
 import { UTApi } from 'uploadthing/server';
 
 const videoFileSizeLimit = 1024 * 1024 * 1024; // 1 GB
+
+const utapi = new UTApi();
 
 const VIDEO_SCHEMA = z.object({
   name: z.string(),
@@ -171,7 +173,6 @@ export const videosRouter = createTRPCRouter({
         await videoUtils.deleteVideo(videoToRemove.videoUploadId);
       }
       if (videoToRemove.thumbnailKey) {
-        const utapi = new UTApi();
         await utapi.deleteFiles(videoToRemove.thumbnailKey);
       }
     } catch (error) {
@@ -191,6 +192,33 @@ export const videosRouter = createTRPCRouter({
     }
 
     return removedVideo;
+  }),
+
+  removeThumbnail: protectedProcedure.input(z.object({ id: z.string().uuid() })).mutation(async ({ ctx, input }) => {
+    const { id: userId } = ctx.user;
+
+    const [videoToRemove] = await db
+      .select()
+      .from(videos)
+      .where(and(eq(videos.id, input.id), eq(videos.userId, userId)));
+
+    if (!videoToRemove) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: 'Video not found to remove thumbnail',
+      });
+    }
+
+    try {
+      if (videoToRemove.thumbnailKey) {
+        await utapi.deleteFiles(videoToRemove.thumbnailKey);
+        await db.update(videos).set({ thumbnailKey: null, thumbnailUrl: null }).where(and(eq(videos.id, input.id), eq(videos.userId, userId)))
+      }
+    } catch (error) {
+      console.error('Error deleting file from uploadthing:', error);
+    }
+
+    return videoToRemove
   }),
 
   getOne: baseProcedure.input(z.object({ id: z.string().uuid() })).query(async ({ input, ctx }) => {

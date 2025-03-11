@@ -23,7 +23,7 @@ import { VideoUpdateSchema } from '@/db/schema';
 import { useToast } from '@/hooks/use-toast';
 import { snakeToTitle } from '@/lib/utils';
 import VideoPlayer from '@/modules/videos/ui/components/video-player';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DropdownMenu, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu';
 import Image from 'next/image';
@@ -32,10 +32,10 @@ import { useRouter } from 'next/navigation';
 import { Suspense, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import ThumbnailGenerate from '../components/global/thumbnail-generate';
-import ThumbnailUpload from '../components/global/thumbnail-upload';
+import { ThumbnailGenerate } from '../components/global/thumbnail-generate';
+import { ThumbnailUpload } from '../components/global/thumbnail-upload';
 import { FormSectionSkeleton } from '../skeletons/form-skeleton';
-import { IconCheck, IconCopy, IconDots, IconLoader, IconLock, IconPhotoPlus, IconPhotoSpark, IconTrash, IconWorld } from '@tabler/icons-react';
+import { IconCheck, IconCopy, IconDots, IconLoader, IconLock, IconPhotoPlus, IconPhotoSpark, IconTrash, IconWorld, IconX } from '@tabler/icons-react';
 
 type Props = {
   videoId: string;
@@ -78,6 +78,25 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
     },
   });
 
+  const removeThumbnail = trpc.videos.removeThumbnail.useMutation({
+    onSuccess: () => {
+      utils.studio.getOne.invalidate({ id: videoId });
+      utils.studio.getMany.invalidate();
+      showToast({
+        message: 'Thumbnail removed successfully',
+        description: "Thumbnail has been reset to the default thumbnail",
+        type: 'success',
+      });
+    },
+    onError: () => {
+      showToast({
+        message: 'Unable to removed thumbnail',
+        description: "Some internal server error occured, please try again later",
+        type: "error"
+      });
+    },
+  })
+
   const remove = trpc.videos.remove.useMutation({
     onSuccess: () => {
       utils.studio.getMany.invalidate();
@@ -118,11 +137,7 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
 
   return (
     <>
-      <ThumbnailUpload
-        videoId={videoId}
-        open={thumbnailModalOpen}
-        onOpenChange={setThumbnailModalOpen}
-      />
+      <ThumbnailUpload />
       <ThumbnailGenerate
         videoId={videoId}
         open={thumbnailGenerateOpen}
@@ -232,9 +247,9 @@ export const FormSectionSuspense = ({ videoId }: Props) => {
                               <IconPhotoPlus className="size-4 mr-1" />
                               Change
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setThumbnailGenerateOpen(true)}>
-                              <IconPhotoSpark className="size-4 mr-1" />
-                              AI-generated
+                            <DropdownMenuItem onClick={() => removeThumbnail.mutate({ id: videoId })}>
+                              <IconX className="size-4 mr-1" />
+                              Remove
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

@@ -4,7 +4,7 @@ import { InfiniteScroll } from '@/components/global/infinite-scroll';
 import { DEFAULT_LIMIT } from '@/constants';
 import CommentForm from '@/modules/comments/ui/components/comment-form';
 import CommentItem from '@/modules/comments/ui/components/comment-item';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { IconLoader } from '@tabler/icons-react';
 import { Suspense } from 'react';
 

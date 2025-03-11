@@ -8,13 +8,22 @@ import { cache } from 'react';
 import Superjson from 'superjson';
 
 export const createTRPCContext = cache(async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  let session = null;
+  let userId: string | undefined
 
-  const userId = session?.user.id;
+  try {
+    session = await auth.api.getSession({
+      headers: await headers(),
+    });
 
-  return { userId: userId };
+    if (session) {
+      userId = session.user.id;
+    }
+  } catch (error) {
+    console.error("Database connection error:", error);
+  }
+
+  return { userId, dbError: session === null };
 });
 
 export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
@@ -30,6 +39,13 @@ export const baseProcedure = t.procedure;
 export const protectedProcedure = t.procedure.use(async function isAuthed(opts) {
   const { ctx } = opts;
 
+  if (ctx.dbError) {
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: 'Database connection error. Please try again later.'
+    });
+  }
+
   if (!ctx.userId) {
     throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Please log in first' });
   }
@@ -39,12 +55,6 @@ export const protectedProcedure = t.procedure.use(async function isAuthed(opts) 
   if (!user) {
     throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Create an account to get started' });
   }
-
-  // const { success } = await ratelimit.limit(ctx.userId);
-
-  // if (!success) {
-  //   throw new TRPCError({ code: 'TOO_MANY_REQUESTS' });
-  // }
 
   return opts.next({
     ctx: { ...ctx, user },

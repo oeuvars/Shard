@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import useToast from '@/hooks/use-toast';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { IconTrash } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { Suspense } from 'react';

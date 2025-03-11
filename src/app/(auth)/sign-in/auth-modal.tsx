@@ -30,9 +30,11 @@ const AuthModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
   const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
-      await signIn.social({
+      const data = await signIn.social({
         provider: 'google',
         callbackURL: '/',
+        errorCallbackURL: '/',
+
       });
       onClose();
     } finally {

@@ -1,6 +1,6 @@
 import { DEFAULT_LIMIT } from '@/constants';
 import SubscriptionView from '@/modules/home/ui/views/subscriptions-view';
-import { HydrateClient, trpc } from '@/trpc/server';
+import { HydrateClient, trpc } from '@/trpc/server/server';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,5 +1,5 @@
 import UserView from '@/modules/users/ui/views/user-view';
-import { HydrateClient, trpc } from '@/trpc/server';
+import { HydrateClient, trpc } from '@/trpc/server/server';
 
 type Props = {
   params: Promise<{

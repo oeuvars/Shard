@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { Suspense } from 'react';
 import VideoPlayer, { VideoPlayerSkeleton } from '../components/video-player';
 import VideoBanner from '../components/video-banner';

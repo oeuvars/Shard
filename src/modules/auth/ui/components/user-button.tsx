@@ -16,13 +16,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
-type Props = {
-  name: string | undefined;
-  image: string | null | undefined | undefined;
-  isInSession: boolean;
-};
 
-export const UserButton = ({ name, image, isInSession }: Props) => {
+export const UserButton = () => {
+
+  const session = authClient.useSession();
+  const user = session.data?.user;
+  const isInSession = !!user;
+
   const { openAuthModal } = useAuthModal();
 
   const getInitials = (name: string) => {
@@ -58,17 +58,17 @@ export const UserButton = ({ name, image, isInSession }: Props) => {
         <div className="my-auto cursor-pointer transition-all duration-300 hover:shadow-md hover:shadow-primary/25 rounded-full">
           {isInSession ? (
             <>
-              {image ? (
+              {user.image ? (
                 <Image
-                  src={image}
-                  alt={name || ''}
+                  src={user.image}
+                  alt={user.name || ''}
                   width={40}
                   height={40}
                   className="rounded-full hover:opacity-90 transition-opacity border border-neutral-200"
                 />
-              ) : name ? (
+              ) : user.name ? (
                 <div className="w-10 h-10 bg-neutral-800 rounded-full flex items-center justify-center text-white text-sm font-semibold transition-transform hover:scale-105 border border-neutral-200">
-                  {getInitials(name)}
+                  {getInitials(user.name)}
                 </div>
               ) : (
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center transition-transform hover:scale-105 border border-neutral-200">
@@ -88,7 +88,7 @@ export const UserButton = ({ name, image, isInSession }: Props) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mr-3 mt-4 w-96 border-dashed rounded-lg bg-gradient-to-br from-white/90 to-white/80 backdrop-blur-xl shadow-lg transition-all duration-300">
         <DropdownMenuLabel className="rounded-md mb-2 pt-2 px-2">
-          {name ? <>Hey, {name} ✨</> : <>Hey, User 👀</>}
+          {user ? <>Hey, {user.name} ✨</> : <>Hey, User 👀</>}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem

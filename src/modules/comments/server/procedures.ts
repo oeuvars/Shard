@@ -1,6 +1,6 @@
 import { db } from "@/db/drizzle";
 import { commentReaction as commentReactions , comment as comments, user as users } from "@/db/schema";
-import { baseProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { baseProcedure, createTRPCRouter, protectedProcedure } from "@/trpc/server/init";
 import { TRPCError } from "@trpc/server";
 import { and, count, desc, eq, getTableColumns, inArray, isNotNull, isNull, lt, or } from "drizzle-orm";
 import { z } from "zod";

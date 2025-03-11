@@ -1,6 +1,6 @@
 "use client"
 
-import { trpc } from '@/trpc/client'
+import { trpc } from '@/trpc/client/client'
 import { Suspense } from 'react'
 
 type Props = {

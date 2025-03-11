@@ -3,18 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { SearchInput } from './search-input';
 import { UserButton } from '@/modules/auth/ui/components/user-button';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 
 export const HomeNavbar = async () => {
-   const session = await auth.api.getSession({
-      headers: await headers(),
-   });
-
-   const user = session?.user;
-
-   const isInSession = !!session?.session;
-
    return (
       <nav className="fixed top-0 left-0 right-0 bg-white flex items-center px-2 pr-5 z-50 rounded-t-md">
          <div className="flex items-center gap-4 w-full py-3">
@@ -30,7 +20,7 @@ export const HomeNavbar = async () => {
             </div>
 
             <div className="flex-shrink-0 items-center flex gap-4">
-               <UserButton name={user?.name} image={user?.image} isInSession={isInSession} />
+               <UserButton />
             </div>
          </div>
       </nav>

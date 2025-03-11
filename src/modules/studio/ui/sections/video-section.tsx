@@ -12,7 +12,7 @@ import {
 import { DEFAULT_LIMIT } from '@/constants';
 import { formatDate, snakeToTitle } from '@/lib/utils';
 import VideoThumbnail from '@/modules/videos/ui/components/video-thumbnail';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { VideoSectionSkeleton } from '../skeletons/video-skeleton';

@@ -3,7 +3,7 @@
 import { InfiniteScroll } from '@/components/global/infinite-scroll';
 import { DEFAULT_LIMIT } from '@/constants';
 import { VideoGridCard } from '@/modules/videos/ui/components/video-gridcard';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { Suspense } from 'react';
 import { VideoSkeleton } from '../skeletons/videos-skeleton';
 

@@ -2,7 +2,7 @@
 
 import { InfiniteScroll } from '@/components/global/infinite-scroll';
 import { DEFAULT_LIMIT } from '@/constants';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { Suspense } from 'react';
 import { PlaylistSkeleton } from '../skeletons/playlist-skeleton';
 import { PlaylistGridCard } from '../components/playlist-gridcard';

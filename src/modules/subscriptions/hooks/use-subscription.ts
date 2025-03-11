@@ -1,4 +1,4 @@
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { useToast } from '@/hooks/use-toast';
 import { authClient } from '@/lib/auth-client';
 import { useAuthModal } from '@/app/(auth)/sign-in/hooks/use-auth-modal';

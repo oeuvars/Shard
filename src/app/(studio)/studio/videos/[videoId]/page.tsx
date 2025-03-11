@@ -1,5 +1,5 @@
 import VideoView from '@/modules/studio/ui/views/video-view';
-import { HydrateClient, trpc } from '@/trpc/server';
+import { HydrateClient, trpc } from '@/trpc/server/server';
 
 type Props = {
   params: Promise<{ videoId: string }>;

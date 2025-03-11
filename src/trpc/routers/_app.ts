@@ -8,7 +8,7 @@ import { suggestionsRouter } from '@/modules/suggestions/server/procedures';
 import { videoReactionsRouter } from '@/modules/video-reactions/procedures';
 import { videoViewsRouter } from '@/modules/video-views/procedures';
 import { videosRouter } from '@/modules/videos/server/procedures';
-import { createTRPCRouter } from '../init';
+import { createTRPCRouter } from '../server/init';
 import { playlistsRouter } from '@/modules/playlists/server/procedures';
 import { usersRouter } from '@/modules/users/server/procedures';
 

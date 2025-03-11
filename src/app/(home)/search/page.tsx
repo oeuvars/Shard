@@ -1,6 +1,6 @@
 import { DEFAULT_LIMIT } from '@/constants';
 import SearchView from '@/modules/search/ui/views/search-view';
-import { HydrateClient, trpc } from '@/trpc/server';
+import { HydrateClient, trpc } from '@/trpc/server/server';
 
 type Props = {
   searchParams: Promise<{

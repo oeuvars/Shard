@@ -2,7 +2,7 @@ import { CommentGetManyOutput } from '../../types';
 import Link from 'next/link';
 import UserAvatar from '@/components/global/user-avatar';
 import { cn, formatDistanceToNow } from '@/lib/utils';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from '@/components/ui/dropdown';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';

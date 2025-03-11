@@ -2,7 +2,7 @@ import UserAvatar from '@/components/global/user-avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';

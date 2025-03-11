@@ -4,7 +4,7 @@ import { InfiniteScroll } from '@/components/global/infinite-scroll';
 import { DEFAULT_LIMIT } from '@/constants';
 import { VideoGridCard } from '@/modules/videos/ui/components/video-gridcard';
 import { VideoRowCard } from '@/modules/videos/ui/components/video-rowcard';
-import { trpc } from '@/trpc/client';
+import { trpc } from '@/trpc/client/client';
 import { Suspense } from 'react';
 import { HistorySkeleton } from '../skeletons/history-skeleton';
 import useToast from '@/hooks/use-toast';

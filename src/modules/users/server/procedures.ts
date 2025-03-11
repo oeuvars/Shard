@@ -4,7 +4,7 @@ import {
   user as users,
   video as videos,
 } from '@/db/schema';
-import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/init';
+import { baseProcedure, createTRPCRouter, protectedProcedure } from '@/trpc/server/init';
 import { TRPCError } from '@trpc/server';
 import { and, eq, getTableColumns, inArray, isNotNull } from 'drizzle-orm';
 import { z } from 'zod';

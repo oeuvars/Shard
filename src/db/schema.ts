@@ -15,21 +15,17 @@ import { createInsertSchema, createSelectSchema, createUpdateSchema } from 'driz
 
 export const reactionType = pgEnum('reaction_type', ['like', 'dislike']);
 
-export const user = pgTable(
-  'user',
-  {
-    id: uuid('id').primaryKey().defaultRandom().notNull(),
-    name: text('name').notNull(),
-    email: text('email').notNull().unique(),
-    emailVerified: boolean('email_verified').notNull(),
-    image: text('image_url').notNull(),
-    bannerUrl: text("banner_url"),
-    bannerKey: text("banner_key"),
-    createdAt: timestamp('created_at').notNull(),
-    updatedAt: timestamp('updated_at').notNull(),
-  },
-  t => [uniqueIndex('user_id_idx').on(t.id)],
-);
+export const user = pgTable('user', {
+  id: uuid('id').primaryKey().defaultRandom().notNull(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: boolean('email_verified').notNull(),
+  image: text('image_url').notNull(),
+  bannerUrl: text("banner_url"),
+  bannerKey: text("banner_key"),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull(),
+}, t => [uniqueIndex('user_id_idx').on(t.id)]);
 
 export const session = pgTable('session', {
   id: uuid('id').primaryKey().defaultRandom().notNull(),
@@ -39,27 +35,23 @@ export const session = pgTable('session', {
   updatedAt: timestamp('updated_at').notNull(),
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
+  userId: uuid('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
 });
 
 export const account = pgTable('account', {
-  id: uuid('id').primaryKey().defaultRandom().notNull(),
-  accountId: text('account_id').notNull(),
-  providerId: text('provider_id').notNull(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
-  accessToken: text('access_token'),
-  refreshToken: text('refresh_token'),
-  idToken: text('id_token'),
-  accessTokenExpiresAt: timestamp('access_token_expires_at'),
-  refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
-  scope: text('scope'),
-  password: text('password'),
-  createdAt: timestamp('created_at').notNull(),
-  updatedAt: timestamp('updated_at').notNull(),
+   id: uuid("id").primaryKey(),
+   accountId: text('account_id').notNull(),
+   providerId: text('provider_id').notNull(),
+   userId: uuid('user_id').notNull().references(()=> user.id, { onDelete: 'cascade' }),
+   accessToken: text('access_token'),
+   refreshToken: text('refresh_token'),
+   idToken: text('id_token'),
+   accessTokenExpiresAt: timestamp('access_token_expires_at'),
+   refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
+   scope: text('scope'),
+   password: text('password'),
+   createdAt: timestamp('created_at').notNull(),
+   updatedAt: timestamp('updated_at').notNull()
 });
 
 export const verification = pgTable('verification', {
@@ -75,12 +67,8 @@ export const userRelation = relations(user, ({ many }) => ({
   video: many(video),
   videoViews: many(videoView),
   videoReactions: many(videoReaction),
-  subscriptions: many(subscription, {
-    relationName: 'subscription_viewer_id_fkey',
-  }),
-  subscribers: many(subscription, {
-    relationName: 'subscription_creator_id_fkey',
-  }),
+  subscriptions: many(subscription, { relationName: 'subscription_viewer_id_fkey' }),
+  subscribers: many(subscription, { relationName: 'subscription_creator_id_fkey' }),
   comments: many(comment),
   commentReactions: many(commentReaction),
   playlists: many(playlist)
@@ -128,12 +116,8 @@ export const playlistVideoRelation = relations(playlistVideo, ({ one }) => ({
 }))
 
 export const subscription = pgTable('subscription', {
-  viewerId: uuid('viewer_id')
-    .references(() => user.id, { onDelete: 'cascade' })
-    .notNull(),
-  creatorId: uuid('creator_id')
-    .references(() => user.id, { onDelete: 'cascade' })
-    .notNull(),
+  viewerId: uuid('viewer_id').references(() => user.id, { onDelete: 'cascade' }).notNull(),
+  creatorId: uuid('creator_id').references(() => user.id, { onDelete: 'cascade' }).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, t => [
@@ -163,9 +147,7 @@ export const category = pgTable('category', {
   description: text('description').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-},
-  t => [uniqueIndex('name_idx').on(t.name)]
-);
+}, t => [uniqueIndex('name_idx').on(t.name)]);
 
 export const categoryRelation = relations(category, ({ many }) => ({
   video: many(video),
@@ -210,26 +192,15 @@ export const videoRelation = relations(video, ({ one, many }) => ({
   playlistVideos: many(playlistVideo)
 }));
 
-export const comment = pgTable(
-  'comment',
-  {
-    id: uuid('id').primaryKey().defaultRandom().notNull(),
-    parentId: uuid('parent_id'),
-    userId: uuid('user_id')
-      .references(() => user.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    videoId: uuid('video_id')
-      .references(() => video.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    content: text('content').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  },
-  t => {
+export const comment = pgTable('comment', {
+  id: uuid('id').primaryKey().defaultRandom().notNull(),
+  parentId: uuid('parent_id'),
+  userId: uuid('user_id').references(() => user.id, { onDelete: 'cascade' }).notNull(),
+  videoId: uuid('video_id').references(() => video.id, { onDelete: 'cascade' }).notNull(),
+  content: text('content').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+}, t => {
     return [
       foreignKey({
         columns: [t.parentId],
@@ -264,29 +235,19 @@ export const CommentInsertSchema = createInsertSchema(comment);
 export const CommentUpdateSchema = createUpdateSchema(comment);
 export const CommentSelectSchema = createSelectSchema(comment);
 
-export const commentReaction = pgTable(
-  'comment-reaction',
-  {
-    userId: uuid('user_id')
-      .references(() => user.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    commentId: uuid('comment_id')
-      .references(() => comment.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    type: reactionType('type').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  },
-  t => [
-    primaryKey({
-      name: 'comment_reaction_pkey',
-      columns: [t.userId, t.commentId],
-    }),
-  ],
+export const commentReaction = pgTable('comment-reaction', {
+  userId: uuid('user_id').references(() => user.id, { onDelete: 'cascade' }).notNull(),
+  commentId: uuid('comment_id').references(() => comment.id, { onDelete: 'cascade' }).notNull(),
+  type: reactionType('type').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+},
+t => [
+  primaryKey({
+    name: 'comment_reaction_pkey',
+    columns: [t.userId, t.commentId],
+  }),
+],
 );
 
 export const commentReactionRelation = relations(commentReaction, ({ one }) => ({
@@ -300,29 +261,18 @@ export const commentReactionRelation = relations(commentReaction, ({ one }) => (
   }),
 }));
 
-export const videoView = pgTable(
-  'video-view',
-  {
-    videoId: uuid('video_id')
-      .references(() => video.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    userId: uuid('user_id')
-      .references(() => user.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  },
-  t => [
-    primaryKey({
-      name: 'video_view_pkey',
-      columns: [t.videoId, t.userId],
-    }),
-  ],
-);
+export const videoView = pgTable('video-view', {
+  videoId: uuid('video_id').references(() => video.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id').references(() => user.id, { onDelete: 'cascade' }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+},
+t => [
+  primaryKey({
+    name: 'video_view_pkey',
+    columns: [t.videoId, t.userId],
+  }),
+]);
 
 export const videoViewRelation = relations(videoView, ({ one }) => ({
   user: one(user, {
@@ -339,29 +289,19 @@ export const VideoViewInsertSchema = createInsertSchema(videoView);
 export const VideoViewUpdateSchema = createUpdateSchema(videoView);
 export const VideoViewSelectSchema = createSelectSchema(videoView);
 
-export const videoReaction = pgTable(
-  'video-reaction',
-  {
-    videoId: uuid('video_id')
-      .references(() => video.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    userId: uuid('user_id')
-      .references(() => user.id, {
-        onDelete: 'cascade',
-      })
-      .notNull(),
-    type: reactionType('type').notNull(),
-    createdAt: timestamp('created_at').defaultNow().notNull(),
-    updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  },
-  t => [
-    primaryKey({
-      name: 'video_reaction_pkey',
-      columns: [t.videoId, t.userId],
-    }),
-  ],
+export const videoReaction = pgTable('video-reaction', {
+  videoId: uuid('video_id').references(() => video.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id').references(() => user.id, { onDelete: 'cascade' }).notNull(),
+  type: reactionType('type').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
+},
+t => [
+  primaryKey({
+    name: 'video_reaction_pkey',
+    columns: [t.videoId, t.userId],
+  }),
+],
 );
 
 export const videoReactionRelation = relations(videoReaction, ({ one }) => ({

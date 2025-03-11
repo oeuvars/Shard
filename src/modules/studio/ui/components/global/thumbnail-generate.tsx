@@ -1,6 +1,6 @@
 import { ResponsiveModal } from "@/components/global/responsive-modal";
 import { UploadDropzone } from "@/lib/uploadthing";
-import { trpc } from "@/trpc/client";
+import { trpc } from "@/trpc/client/client";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -19,7 +19,7 @@ const formSchema = z.object({
    prompt: z.string().min(10),
 })
 
-const ThumbnailGenerate = ({ videoId, open, onOpenChange }: Props) => {
+export const ThumbnailGenerate = ({ videoId, open, onOpenChange }: Props) => {
 
    const form = useForm<z.infer<typeof formSchema>>({
       resolver: zodResolver(formSchema),
@@ -85,5 +85,3 @@ const ThumbnailGenerate = ({ videoId, open, onOpenChange }: Props) => {
       </ResponsiveModal>
    )
 }
-
-export default ThumbnailGenerate;
